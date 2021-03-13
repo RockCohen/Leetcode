@@ -1,10 +1,15 @@
 # Leetcode
 
 #### 介绍
-leetcode个人题解
+leetcode个人题解,根据leetcode给的标签进行分类，按照数据结构对题目进行求解。
 
 #### 软件架构
 软件架构说明
+- scr
+  - array
+  - list
+  - stack
+
 
 
 #### 安装教程
