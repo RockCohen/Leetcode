@@ -1,5 +1,7 @@
 package tree;
 
+import java.util.Stack;
+
 /**
  * 173. 二叉搜索树迭代器
  * 实现一个二叉搜索树迭代器。你将使用二叉搜索树的根节点初始化迭代器。
@@ -27,14 +29,13 @@ package tree;
  *
  */
 public class BSTIterator {
+    private Stack<TreeNode> stack=new Stack<>();
     public BSTIterator(TreeNode root) {
-
     }
-
     public int next() {
-
+        return 0;
     }
     public boolean hasNext() {
-
+        return true;
     }
 }
