@@ -270,13 +270,81 @@ public class TreeOperating {
             isPreface=!isPreface;
             }
         return res;
+    }
+
+    /**
+     * 331. 验证二叉树的前序序列化
+     * 序列化二叉树的一种方法是使用前序遍历。当我们遇到一个非空节点时，我们可以记录下这个节点的值。如果它是一个空节点，我们可以使用一个标记值记录，例如 #。
+     *
+     *      _9_
+     *     /   \
+     *    3     2
+     *   / \   / \
+     *  4   1  #  6
+     * / \ / \   / \
+     * # # # #   # #
+     * 例如，上面的二叉树可以被序列化为字符串 "9,3,4,#,#,1,#,#,2,#,6,#,#"，其中 # 代表一个空节点。
+     *
+     * 给定一串以逗号分隔的序列，验证它是否是正确的二叉树的前序序列化。编写一个在不重构树的条件下的可行算法。
+     *
+     * 每个以逗号分隔的字符或为一个整数或为一个表示 null 指针的 '#' 。
+     *
+     * 你可以认为输入格式总是有效的，例如它永远不会包含两个连续的逗号，比如 "1,,3" 。
+     *
+     * 示例 1:
+     *
+     * 输入: "9,3,4,#,#,1,#,#,2,#,6,#,#"
+     * 输出: true
+     * 示例 2:
+     *
+     * 输入: "1,#"
+     * 输出: false
+     * 示例 3:
+     *
+     * 输入: "9,#,#,1"
+     * 输出: false
+     * 题解思路就是：一个数字跟随两个#抵消之后形成一个#。然后将其入栈，最后判断栈是否为#。
+     * 显然这个题充分体现了二叉树的递归性质。这也是为什么与栈有关系的原因。这个题值得深刻的思考。
+     * @param preorder
+     * @return
+     */
+    public boolean isValidSerialization(String preorder) {
+        List<String> strings=new ArrayList<>();
+        Stack<String> stack=new Stack<>();
+        int i=0;
+        int j=0;
+        while(i<preorder.length()){
+            if(String.valueOf(preorder.charAt(i)).equals(",")){
+                i++;
+            }
+            else if(String.valueOf(preorder.charAt(i)).equals("#")){
+                strings.add("#");
+                i++;
+
+            }
+            else {
+                j = i;
+                while (j < preorder.length() && Character.isDigit(preorder.charAt(j))) j++;
+                strings.add(preorder.substring(i, j));
+                i = j;
+            }
         }
+        if(strings.size()<3){
+            return strings.size() < 2;
+        }
+        i=0;
+        while(i<strings.size()){
+//            if(!strings.get(i).equals("#"))
+        }
+    }
 
 
     public static void main(String[] args){
-        TreeNode root=new TreeNode(0,new TreeNode(2,new TreeNode(1,new TreeNode(5),new TreeNode(1)),null),new TreeNode(4,new TreeNode(3,null, new TreeNode(6)),new TreeNode(-1,null,new TreeNode(8))));
-       List<List<Integer>> list=new TreeOperating().zigzagLevelOrder(root);
-        list.forEach(System.out::println);
+//        TreeNode root=new TreeNode(0,new TreeNode(2,new TreeNode(1,new TreeNode(5),new TreeNode(1)),null),new TreeNode(4,new TreeNode(3,null, new TreeNode(6)),new TreeNode(-1,null,new TreeNode(8))));
+//       List<List<Integer>> list=new TreeOperating().zigzagLevelOrder(root);
+//        list.forEach(System.out::println);
+        boolean flag=new TreeOperating().isValidSerialization("9,3,4,#,#,1,#,#,2,#,6,#,#");
+        System.out.println(flag);
     }
 }
 
