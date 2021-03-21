@@ -1,0 +1,17 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch TreeOperating",
+            "request": "launch",
+            "mainClass": "tree.TreeOperating",
+            "projectName": "leetcode_b79ec33f"
+        },
+        {
+            "env": {
+                "PYTHONPATH": "${workspaceRoot}"
+            },
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

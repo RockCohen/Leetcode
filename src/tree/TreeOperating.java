@@ -1,8 +1,4 @@
 package tree;
-
-import tree.TreeNode;
-
-import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -332,10 +328,37 @@ public class TreeOperating {
         if(strings.size()<3){
             return strings.size() < 2;
         }
-        i=0;
-        while(i<strings.size()){
-//            if(!strings.get(i).equals("#"))
+        i=1;
+        stack.push(strings.get(0));
+        while(i<strings.size()-2){
+            if(isDigit(stack.peek())&&strings.get(i).equals("#")&&strings.get(i+1).equals("#")){
+                stack.pop();
+                stack.push("#");
+                i+=2;
+            }
+            else {
+                stack.push(strings.get(i));
+                i++;
+            }
         }
+        while(stack.size()>2){
+            String top=stack.pop();
+            String head=stack.pop();
+            if(top.equals("#")&&head.equals("#")&&!stack.pop().equals("#")){
+                stack.push("#");
+            }
+            else return false;
+        }
+        if(!stack.isEmpty()&&stack.peek().equals("#"))return true;
+        return false;
+
+    }
+    public boolean isDigit(String s){
+        try{
+            Integer.parseInt(s);
+        }
+        catch(Exception e){}
+        return true;
     }
 
 
