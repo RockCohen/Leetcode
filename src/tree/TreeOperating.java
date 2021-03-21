@@ -320,9 +320,10 @@ public class TreeOperating {
                pre.remove(i);
                pre.remove(i);
                i--;
+               if(i<0)return false;
            }
-           else if(pre.get(i).equals("#"))i++;
-           else i+=2;
+           else i++;
+           if(i==pre.size()-2)i=0;
        }
        if(pre.size()==1&&pre.get(0).equals("#")) return true;
        else return false;
@@ -350,13 +351,13 @@ public class TreeOperating {
         }
         return strings;
     }
-
-
     public static void main(String[] args){
-//        TreeNode root=new TreeNode(0,new TreeNode(2,new TreeNode(1,new TreeNode(5),new TreeNode(1)),null),new TreeNode(4,new TreeNode(3,null, new TreeNode(6)),new TreeNode(-1,null,new TreeNode(8))));
-//       List<List<Integer>> list=new TreeOperating().zigzagLevelOrder(root);
-//        list.forEach(System.out::println);
-        boolean flag=new TreeOperating().isValidSerialization("9,3,4,#,#,1,#,#,2,#,6,#,#");
+        boolean flag=new TreeOperating().isValidSerialization("1,#,#,#,#");
+        /**
+         * 1,#,#,#,#
+         * #,#,#
+         * 
+         */
         System.out.println(flag);
     }
 }
