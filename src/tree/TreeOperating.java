@@ -304,9 +304,32 @@ public class TreeOperating {
      * @param preorder
      * @return
      */
+    //9,3,4,#,#,1,#,#,2,#,6,#,#
+    //9,3,#,1,#,#,2,#,6,#,#
+    //9,3,#,1,#,#,2,#,6,#,#
+    //9,3,#,#,2,#,6,#,#
+    //9,#,2,#,6,#,#
+    // 9,#,2,#,#
+    //9,#,#
+    //#
     public boolean isValidSerialization(String preorder) {
+       List<String> pre=preProcess(preorder);
+       int i=0;
+       while(pre.size()>2&&i<pre.size()-2){
+           if(!pre.get(i).equals("#")&&pre.get(i+1).equals("#")&&pre.get(i+2).equals("#")){
+               pre.remove(i);
+               pre.remove(i);
+               i--;
+           }
+           else if(pre.get(i).equals("#"))i++;
+           else i+=2;
+       }
+       if(pre.size()==1&&pre.get(0).equals("#")) return true;
+       else return false;
+    }
+    //9,3,4,#,#,1,#,#,2,#,6,#,#
+    public List<String> preProcess(String preorder){
         List<String> strings=new ArrayList<>();
-        Stack<String> stack=new Stack<>();
         int i=0;
         int j=0;
         while(i<preorder.length()){
@@ -325,40 +348,7 @@ public class TreeOperating {
                 i = j;
             }
         }
-        if(strings.size()<3){
-            return strings.size() < 2;
-        }
-        i=1;
-        stack.push(strings.get(0));
-        while(i<strings.size()-2){
-            if(isDigit(stack.peek())&&strings.get(i).equals("#")&&strings.get(i+1).equals("#")){
-                stack.pop();
-                stack.push("#");
-                i+=2;
-            }
-            else {
-                stack.push(strings.get(i));
-                i++;
-            }
-        }
-        while(stack.size()>2){
-            String top=stack.pop();
-            String head=stack.pop();
-            if(top.equals("#")&&head.equals("#")&&!stack.pop().equals("#")){
-                stack.push("#");
-            }
-            else return false;
-        }
-        if(!stack.isEmpty()&&stack.peek().equals("#"))return true;
-        return false;
-
-    }
-    public boolean isDigit(String s){
-        try{
-            Integer.parseInt(s);
-        }
-        catch(Exception e){}
-        return true;
+        return strings;
     }
 
 
