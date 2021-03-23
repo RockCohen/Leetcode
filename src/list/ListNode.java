@@ -1,7 +1,5 @@
 package list;
 
-import java.util.List;
-
 /**
  * 单链表数据结构__这是一个带头节点的单链表
  */
