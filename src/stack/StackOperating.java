@@ -391,7 +391,5 @@ public int scoreOfParentheses(String S) {
     return 0;
 }
 public static void main(String[] args){
-    
-
 }
 }
