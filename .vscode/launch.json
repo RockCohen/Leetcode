@@ -5,6 +5,13 @@
             "name": "Launch StackOperating",
             "request": "launch",
             "mainClass": "stack.StackOperating",
+            "projectName": "leetcode_b79ec33f"
+        },
+        {
+            "type": "java",
+            "name": "Launch StackOperating",
+            "request": "launch",
+            "mainClass": "stack.StackOperating",
             "projectName": "leetcode_787e2dde"
         },
         {
