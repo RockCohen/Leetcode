@@ -2,6 +2,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch StackOperating",
+            "request": "launch",
+            "mainClass": "stack.StackOperating",
+            "projectName": "leetcode_787e2dde"
+        },
+        {
+            "type": "java",
+            "name": "Launch TreeOperating",
+            "request": "launch",
+            "mainClass": "tree.TreeOperating",
+            "projectName": "leetcode_787e2dde"
+        },
+        {
+            "type": "java",
             "name": "Launch TreeOperating",
             "request": "launch",
             "mainClass": "tree.TreeOperating",
