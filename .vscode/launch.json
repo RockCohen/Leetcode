@@ -2,6 +2,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch TreeOperating",
+            "request": "launch",
+            "mainClass": "TreeOperating",
+            "projectName": "leetcode_b79ec33f"
+        },
+        {
+            "type": "java",
+            "name": "Launch CircularQueue",
+            "request": "launch",
+            "mainClass": "CircularQueue",
+            "projectName": "leetcode_b79ec33f"
+        },
+        {
+            "type": "java",
             "name": "Launch StackOperating",
             "request": "launch",
             "mainClass": "stack.StackOperating",
