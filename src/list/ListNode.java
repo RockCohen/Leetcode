@@ -4,11 +4,11 @@ package list;
  * 单链表数据结构__这是一个带头节点的单链表
  */
 public class ListNode {
-    int val;
+    public int val;
       public ListNode next;
       public ListNode() {}
       public ListNode(int val) { this.val = val; }
-      ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+      public ListNode(int val, ListNode next) { this.val = val; this.next = next; }
       public void print(){//打印链表
           System.out.println(this.val);
           while(next!=null){

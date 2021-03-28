@@ -353,6 +353,7 @@ public class TreeOperating {
         return strings;
     }
     /**
+     * 题解思路：层遍历，记录最右边的元素添加到结果数组即可。
      * @author Rock                           
      * @param root
      * @return
@@ -363,7 +364,6 @@ public class TreeOperating {
         List<Integer> res=new ArrayList<>();
         if(root==null)return res;
         queue.add(root);
-        res.add(root.val);
         int count=1;
         while(!queue.isEmpty()){
            int counter=count;
@@ -372,12 +372,12 @@ public class TreeOperating {
             while(counter>0){
                 TreeNode node=queue.poll();
                 mid[0]=node.val;
-                if(node.right!=null){
-                    queue.add(node.right);
+                if (node.left != null){
+                    queue.add(node.left);
                     count++;
                 }
-                if(node.left!=null){
-                    queue.add(node.left);
+                if(node.right!=null){
+                    queue.add(node.right);
                     count++;
                 }
                 counter--;

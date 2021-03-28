@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch Sort",
+            "request": "launch",
+            "mainClass": "Sort",
+            "projectName": "leetcode_b79ec33f"
+        },
+        {
+            "type": "java",
             "name": "Launch TreeOperating",
             "request": "launch",
             "mainClass": "TreeOperating",
