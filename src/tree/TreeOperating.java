@@ -1,6 +1,7 @@
 package tree;
 import java.util.*;
 
+
 /**
  * 二叉树的操作类
  */
@@ -351,15 +352,46 @@ public class TreeOperating {
         }
         return strings;
     }
-    public static void main(String[] args){
-        boolean flag=new TreeOperating().isValidSerialization("1,#,#,#,#");
-        /**
-         * 1,#,#,#,#
-         * #,#,#
-         * 
-         */
-        System.out.println(flag);
+    /**
+     * 题解思路：层遍历，记录最右边的元素添加到结果数组即可。
+     * @author Rock                           
+     * @param root
+     * @return
+     * @see https://leetcode-cn.com/problems/binary-tree-right-side-view/
+     */
+    public List<Integer> rightSideView(TreeNode root) {
+        Queue<TreeNode> queue=new LinkedList<>();
+        List<Integer> res=new ArrayList<>();
+        if(root==null)return res;
+        queue.add(root);
+        int count=1;
+        while(!queue.isEmpty()){
+           int counter=count;
+           count=0;
+            int[] mid=new int[1];
+            while(counter>0){
+                TreeNode node=queue.poll();
+                mid[0]=node.val;
+                if (node.left != null){
+                    queue.add(node.left);
+                    count++;
+                }
+                if(node.right!=null){
+                    queue.add(node.right);
+                    count++;
+                }
+                counter--;
+            }
+            res.add(mid[0]);
+        }
+        return res;
     }
+
+public static void main(String[] args){
+    TreeNode root=new TreeNode(1,new TreeNode(2,null,new TreeNode(5)),new TreeNode(3,null,new TreeNode(4)));
+    List<Integer> list=new TreeOperating().rightSideView(root);
+    Arrays.stream(list.toArray()).forEach(System.out::println);
+}
 }
 
 
