@@ -398,13 +398,17 @@ public class TreeOperating {
      * @see https://leetcode-cn.com/problems/validate-binary-search-tree/
      */
     public boolean isValidBST(TreeNode root) {
-
+        List<Integer> list=stackMiddleOrderTraversal(root);
+        for(int i=0;i<list.size()-1;i++){
+            if(list.get(i)>=list.get(i+1))return false;
+        }
+        return true;
     }
 
 public static void main(String[] args){
-    TreeNode root=new TreeNode(1,new TreeNode(2,null,new TreeNode(5)),new TreeNode(3,null,new TreeNode(4)));
-    List<Integer> list=new TreeOperating().rightSideView(root);
-    Arrays.stream(list.toArray()).forEach(System.out::println);
+    TreeNode root=new TreeNode(4,new TreeNode(2,null,new TreeNode(3)),new TreeNode(5,null,new TreeNode(6)));
+    boolean res=new TreeOperating().isValidBST(root);
+    System.out.println(res);
 }
 }
 
