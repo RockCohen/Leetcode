@@ -3,6 +3,8 @@ package sort;
 import list.ListNode;
 
 import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import static java.lang.Math.max;
 
@@ -231,7 +233,6 @@ public class Sort  {
         }
         return false;
     }
-
     /**
      * @author Rock
      * @param citations
@@ -241,20 +242,111 @@ public class Sort  {
     public int hIndex(int[] citations) {
         Arrays.sort(citations);
         int len=citations.length;
-        int h=0;
-//        for(int i=0;i<citations.length;i++){
-//            if(len-i>)
-//
-//        }
-        return h;
+        return 0;
+    }
+
+    /**
+     * 题解思路：
+     * @author Rock
+     * @param nums 待排序数组
+     * @see https://leetcode-cn.com/problems/wiggle-sort-ii/
+     */
+    public void wiggleSort(int[] nums) {
+        Arrays.sort(nums);
+        int i=1;
+        List<Integer> res=new ArrayList<>();
+        while(i<(nums.length/2)){
+            res.add(nums[i]);
+            res.add(nums.length-1-i);
+            i++;
+        }
+        if(nums.length%2==1)res.add(nums[i]);
+    }
+    public int[] intersection(int[] nums1, int[] nums2) {
+        if(nums1.length>nums2.length){
+            int[] temp=nums1;
+            nums1=nums2;
+            nums2=temp;
+        }
+        List<Integer> res=new ArrayList<>();
+        Set<Integer> set=new HashSet<>();
+        for (int si:nums2) set.add(si);
+        for (int j : nums1) if (set.contains(j)) res.add(j);
+        int [] r=new int[res.size()];
+        for(int i=0;i<r.length;i++) r[i]=res.get(i);
+        return r;
+    }
+    public int[] sameSection(int[] a,int[] b){
+        if(a[0]>b[0]){
+            int[] temp=a;
+            a=b;
+            b=temp;
+        }
+        if(a[1]>=b[0]){
+            return new int[]{b[0],Math.min(a[1],b[1])};
+        }
+        return new int[0];
+    }
+
+    /**
+     * 题解思路：将子数组按照下界的升序排序，然后求解交集，然后更新交集与下一个区间进行对比，不断更新交集；
+     * 如果不存在交集，那么🗡的数量加一。
+     * @author Rock
+     * @param points
+     * @return
+     * @see https://leetcode-cn.com/problems/minimum-number-of-arrows-to-burst-balloons/submissions/
+     */
+    public int findMinArrowShots(int[][] points) {
+        Arrays.sort(points, (o1, o2) -> o1[0]-o2[0]);
+        int[] intersection=points[0];
+        int count=1;
+        for(int i=1;i<points.length;i++){
+            int[] mid=sameSection(intersection,points[i]);
+            if(mid.length!=0){
+                intersection=mid;
+            }
+            else{
+                count++;
+                intersection=points[i];
+            }
+        }
+        return count;
+    }
+
+    /**
+     * 题解思路：
+     * @author Rock
+     * @param s 字符集
+     * @param dictionary 带选择字符数组
+     * @return
+     * @see https://leetcode-cn.com/problems/longest-word-in-dictionary-through-deleting/
+     */
+    public String findLongestWord(String s, List<String> dictionary) {
+        dictionary.sort((o1, o2) -> {
+            if (o1.length() == o2.length()) return o1.compareTo(o2);//两个长度相等，按照字典序进行排序
+            else return o2.length() - o1.length();//否则按照长度排序。
+        });
+        for (String d:dictionary) {
+            if(isSubsequence(s,d))return d;
+        }
+        return "";
+    }
+    public boolean isSubsequence(String x, String y) {
+        int j = 0;
+        for (int i = 0; i < y.length() && j < x.length(); i++)
+            if (x.charAt(j) == y.charAt(i))
+                j++;
+        return j == x.length();
+    }
+    public int[][] kClosest(int[][] points, int k) {
+        int[][] res=new int[k][2];
+        Arrays.sort(points, Comparator.comparingInt(o -> (o[0] * o[0] + o[1] * o[1])));
+        if (k >= 0) System.arraycopy(points, 0, res, 0, k);
+        return res;
     }
     public static void main(String[] args) {
-
-        int[] num={3,0,6,1,2,4};
-        System.out.println(new Sort().hIndex(num));
-        //System.out.println(new Sort().compareToStr(34,5));
-     // ListNode head=new ListNode(5,new ListNode(6,new ListNode(3,new ListNode(1,new ListNode(8,new ListNode(7,new ListNode(2,new ListNode(4))))))));
-
+        int[][] points={{1,3},{-2,2},{3,3},{4,1}};
+        System.out.println(Arrays.deepToString(new Sort().kClosest(points, 2)));
     }
 
 }

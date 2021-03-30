@@ -387,6 +387,20 @@ public class TreeOperating {
         return res;
     }
 
+    /**
+     * 题解思路：
+     * 1. 通过层遍历的方式判断每一个节点是否满足二叉搜索树的定义。
+     * 2. 直接递归实现。
+     * 3. 中序遍历。
+     * @author Rock
+     * @param root 树根
+     * @return
+     * @see https://leetcode-cn.com/problems/validate-binary-search-tree/
+     */
+    public boolean isValidBST(TreeNode root) {
+
+    }
+
 public static void main(String[] args){
     TreeNode root=new TreeNode(1,new TreeNode(2,null,new TreeNode(5)),new TreeNode(3,null,new TreeNode(4)));
     List<Integer> list=new TreeOperating().rightSideView(root);
