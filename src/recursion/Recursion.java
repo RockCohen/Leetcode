@@ -33,6 +33,7 @@ import java.util.*;
  *
  */
 public class Recursion {
+    int sum=0;//累加树初始变量
     /**
      * 题目：符串反转
      * 题解思路：
@@ -318,14 +319,95 @@ public class Recursion {
      * @see https://leetcode-cn.com/problems/convert-bst-to-greater-tree/
      */
     public TreeNode convertBST(TreeNode root) {
-        return null;
+        if (root != null) {
+            convertBST(root.right);
+            sum += root.val;
+            root.val = sum;
+            convertBST(root.left);
+        }
+        return root;
     }
 
+    /**
+     * 题解思路：中序遍历
+     * @author Rock
+     * @param root
+     * @return
+     * @see https://leetcode-cn.com/problems/binode-lcci/
+     */
+    static class Solution {
+        TreeNode head = new TreeNode(-1);   // 为了返回单向链表的头节点而多设的一个节点
+        TreeNode perv = null;               // 指向当前节点的前一个节点
+        public TreeNode convertBiNode(TreeNode root) {
+            helper(root);
+            return head.right;
+        }
+        public void helper(TreeNode root) {
+            if (root == null) { return;}
+            helper(root.left);
+            if (perv == null) {     // 第一个节点
+                perv = root;        // 记录第一个节点
+                head.right = root;  // 记录它，它将作为单链表的表头
+            } else {                // 第一个节点之后的节点
+                perv.right = root;  // 前一个节点的右指针指向当前节点
+                perv = root;        // 更新perv指向
+            }
+            root.left = null;       // 当前节点的左指针设为null
+            helper(root.right);
+        }
+    }
+
+    /**
+     * @author Rock
+     * @param shorter
+     * @param longer
+     * @param k
+     * @return
+     * @see https://leetcode-cn.com/problems/diving-board-lcci/
+     */
+    public int[] divingBoard(int shorter, int longer, int k) {
+        if (k == 0) {
+            return new int[0];
+        }
+        if (shorter == longer) {
+            return new int[]{shorter * k};
+        }
+        Set<Integer> set=new HashSet<>();
+        for(int i=0;i<=k;i++){
+            set.add(i*longer+(k-i)*shorter);
+        }
+        int [] res=new int[set.size()];
+        Iterator<Integer> iterator=set.iterator();
+        int j=0;
+        while(iterator.hasNext())res[j++]=iterator.next();
+        return res;
+    }
+
+    /**
+     * @author Rock
+     * @param A
+     * @param B
+     * @return
+     * @see https://leetcode-cn.com/problems/recursive-mulitply-lcci/
+     */
+    public int multiply(int A, int B) {
+        int res=0;
+        int i=0;
+        do{
+            res+=(B-(B>>1<<1))==1?A<<i:0;
+            i++;
+            B=B>>1;
+        } while(B!=0);
+        return res;
+    }
+
+    /**
+     * 测试主函数
+     * @param args
+     */
     public static void main(String[] args) {
-            ListNode l1=new ListNode(2,new ListNode(4));
-            ListNode l2=new ListNode(1,new ListNode(3));
-            ListNode res=new Recursion().mergeTwoLists(l1,l2);
-            res.print();
+       int res= new Recursion().multiply(4,5);
+       System.out.println(res);
     }
 
 
