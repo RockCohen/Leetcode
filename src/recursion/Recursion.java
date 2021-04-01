@@ -409,7 +409,5 @@ public class Recursion {
        int res= new Recursion().multiply(4,5);
        System.out.println(res);
     }
-
-
 }
 
