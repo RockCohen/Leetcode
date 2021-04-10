@@ -7,6 +7,32 @@ import java.util.*;
  */
 public class TreeOperating {
     /**
+     * 题目：二叉树的最大深度
+     * @param root
+     * @return
+     */
+    public int depth(TreeNode root){
+        if(root==null)return 0;
+        else return Math.max(depth(root.left),depth(root.right))+1;
+    }
+
+    /**
+     * 题目:二叉树的最小深度（叶节点到根节点的最近距离。）
+     * @author Rock
+     * @param root
+     * @return
+     * @see https://leetcode-cn.com/problems/minimum-depth-of-binary-tree/
+     *
+     * 题解思路：注意体会与最大深度的区别，其实基本思路是一样的，主要的问题递归的子问题划分。
+     *         或者说基本问题的划分是有点一点区别的。其实造成这区别的关键是：null是二叉树的虚拟叶节点。
+     */
+    public int minDepth(TreeNode root) {
+        if (root == null) return 0;
+        else if (root.left == null) return minDepth(root.right) + 1;
+        else if (root.right == null) return minDepth(root.left) + 1;
+        else return Math.min(minDepth(root.left), minDepth(root.right)) + 1;
+    }
+    /**
      * 递归中序遍历二叉树，分别调整res.add()的位置实现先根遍历，后根遍历，中序遍历。
      * @param root 树根
      * @param res 显然需要通过参数化去实现结果的输出，无法在方法中声明变量来传递。
@@ -33,7 +59,6 @@ public class TreeOperating {
      * 3. 当前的左子树为空，遍历（这里的遍历泛指，可以对节点做其他的操作）当前节点。
      * 4. 栈顶节点退栈，将其右子树的节点入栈。（如果右子树为空，并且栈空，结束）
      * 5. 重复2-4的过程。
-     *
      */
     public List<Integer> stackMiddleOrderTraversal(TreeNode root) {//中序遍历
         Stack<TreeNode> treeNodeStack = new Stack<>();//存储节点的栈
@@ -63,8 +88,6 @@ public class TreeOperating {
      * 先序遍历
      * @param root 树根
      * @return 先序遍历列表
-     *
-     *
      * 算法细节：
      * 概念前提：先序遍历的顺序：根--->左子树--->右子树。
      * 基本步骤：为了寻求到根所在的右子树，我们需要将根节点借助数据结构栈来存储。并且先遍历栈顶元素，然后再考虑其左子树与右子树。
@@ -96,9 +119,6 @@ public class TreeOperating {
      * 后序遍历
      * @param root 树根
      * @return 后序遍历列表
-     *
-     *
-     *
      * 算法思想：
      * 概念前提：访问顺序：左子树--->右子树--->根
      * 基本步骤：根节点入栈，左子树入栈访问之，左子树退栈，右子树入栈，访问之，最后访问根节点。
@@ -149,8 +169,6 @@ public class TreeOperating {
         }
         return result;
     }
-
-
     /**
      * 层遍历：
      * @param root 树根
@@ -167,6 +185,42 @@ public class TreeOperating {
             if(node.right!=null)queue.add(node.right);
         }
         return result;
+    }
+    /**
+     * 题目：层遍历变花样
+     * @author Rock
+     * @param root
+     * @return
+     * @see https://leetcode-cn.com/problems/binary-tree-level-order-traversal-ii/
+     */
+    public List<List<Integer>> levelOrderBottom(TreeNode root) {
+        List<List<Integer>> res=new ArrayList<>();
+        if(root==null)return res;
+        Queue<TreeNode> queue=new LinkedList<>();
+        int arrayCount=1;
+        queue.add(root);
+        while(!queue.isEmpty()){
+            List<Integer> list=new ArrayList<>();
+            int count=0;
+            while(!queue.isEmpty()&&arrayCount>0){
+                TreeNode node=queue.poll();
+                list.add(node.val);
+                if(node.left!=null)
+                {
+                    queue.add(node.left);
+                    count++;
+                }
+                if(node.right!=null)
+                {
+                    queue.add(node.right);
+                    count++;
+                }
+                arrayCount--;
+            }
+            res.add(0,list);
+            arrayCount=count;
+        }
+        return res;
     }
     /**
      * 二叉树的两数之和
@@ -404,6 +458,145 @@ public class TreeOperating {
         }
         return true;
     }
+
+    /**
+     * 题目：判断两棵树是否相同
+     * @author Rock
+     * @param p
+     * @param q
+     * @return
+     * @see https://leetcode-cn.com/problems/same-tree/submissions/
+     */
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        if(p==null&&q==null)return true;
+        else if(p==null||q==null)return false;
+        else return (p.val==q.val)&&isSameTree(p.left,q.left)&&isSameTree(p.right,q.right);
+    }
+
+    /**
+     * 题目：根据前序遍历与中序遍历构造二叉树
+     * @author Rock
+     * @param preorder
+     * @param inorder
+     * @return
+     * @see https://leetcode-cn.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/
+     *
+     * 我的思路：
+     *         3
+     *        / \
+     *       9   20
+     *      /\   /
+     *     1  2 15
+     * 前序：3,9,1,2,20,15
+     * 中序：1,9,2,3,15,20
+     * 遍历前序数组，建立当前元素在中序数组的索引栈。
+     * [[3,3],[9,1],[1,0],[2,2],[20,5],[15,4]]
+     * 解释：显然3是根节点，9的中序索引小于3的索引，所以一定是其左子树的节点，并且当前只有根节点，故9是3的左子节点，
+     *      1的索引小于9的1，故是9的左子节点，2的索引是2，小于3的3，大于9的1，显然是9的右子节点。一次类推。
+     *
+     */
+    public TreeNode buildTreePre(int[] preorder, int[] inorder) {
+        if (preorder == null || preorder.length == 0) {
+            return null;
+        }
+        TreeNode root = new TreeNode(preorder[0]);
+        Deque<TreeNode> stack = new LinkedList<>();
+        stack.push(root);
+        int inorderIndex = 0;
+        for (int i = 1; i < preorder.length; i++) {
+            int preorderVal = preorder[i];
+            TreeNode node = stack.peek();
+            if (node.val != inorder[inorderIndex]) {
+                node.left = new TreeNode(preorderVal);
+                stack.push(node.left);
+            } else {
+                while (!stack.isEmpty() && stack.peek().val == inorder[inorderIndex]) {
+                    node = stack.pop();
+                    inorderIndex++;
+                }
+                node.right = new TreeNode(preorderVal);
+                stack.push(node.right);
+            }
+        }
+        return root;
+    }
+
+    /**
+     * 题目：根据中序与后序遍历建立二叉树
+     * @author Rock
+     * @param inorder
+     * @param postorder
+     * @return
+     * @see https://leetcode-cn.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/
+     * 
+     * 我的思路：与上面前序中序恢复一样，
+     *
+     *              3
+     *             / \
+     *            9   20
+     *                /\
+     *               15 7
+     * 中序：[9,3,15,20,7]
+     * 后序：[9,15,7,20,3]
+     * 显然后序的最后节点一定是根，根据此结论，我们遍历后序的数组，并且建立该元素在中序遍历中的索引键值对。
+     *
+     * [3,1}
+     * [[3,1],[20,3]]因为20的3大于3的1，显然20是3的右子节点。
+     * [[3,1],[20,3],[7,4]]判断7是20的右子节点
+     * [[3,1],[20,3],[7,4],[15,2]] 15的2大于3的1，小于20的3，显然在3的右边，20的左边，作为20的左子节点。
+     * [[3,1],[20,3],[7,4],[15,2],[9,0]] 9作为3的左子节点。
+     */
+    public TreeNode buildTreePost(int[] inorder, int[] postorder) {
+        if (postorder == null || postorder.length == 0) {
+            return null;
+        }
+        TreeNode root = new TreeNode(postorder[postorder.length - 1]);
+        Deque<TreeNode> stack = new LinkedList<TreeNode>();
+        stack.push(root);
+        int inorderIndex = inorder.length - 1;
+        for (int i = postorder.length - 2; i >= 0; i--) {
+            int postorderVal = postorder[i];
+            TreeNode node = stack.peek();
+            if (node.val != inorder[inorderIndex]) {
+                node.right = new TreeNode(postorderVal);
+                stack.push(node.right);
+            } else {
+                while (!stack.isEmpty() && stack.peek().val == inorder[inorderIndex]) {
+                    node = stack.pop();
+                    inorderIndex--;
+                }
+                node.left = new TreeNode(postorderVal);
+                stack.push(node.left);
+            }
+        }
+        return root;
+    }
+
+    /**
+     * 题目：将有序数组转换为二叉搜索树。
+     * @author Rock
+     * @param nums
+     * @return
+     * @see https://leetcode-cn.com/problems/convert-sorted-array-to-binary-search-tree/
+     *
+     * 题解思路：显然利用二分法是比较合适的。并且安好二分法构造出来的搜索树还是平衡二叉树。
+     * 下面的解题方法简直是模板。在递归模块关于此类题目的解题方法进行了比较深入的分析了。参考：
+     * https:rockcohen.gitee.io/blog
+     */
+    public TreeNode sortedArrayToBST(int[] nums) {
+        return sortedArrayToBSTHelper(nums,0,nums.length);
+    }
+    private TreeNode sortedArrayToBSTHelper(int[] nums,int left,int right){
+        if(left>=right)return null;
+        int mid=(left+right)/2;
+        TreeNode root=new TreeNode(nums[mid]);
+        TreeNode l=sortedArrayToBSTHelper(nums,left,mid);
+        TreeNode r=sortedArrayToBSTHelper(nums,mid+1,right);
+        root.left=l;
+        root.right=r;
+        return root;
+    }
+
 
 public static void main(String[] args){
     TreeNode root=new TreeNode(4,new TreeNode(2,null,new TreeNode(3)),new TreeNode(5,null,new TreeNode(6)));
