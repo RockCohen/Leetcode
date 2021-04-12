@@ -200,16 +200,13 @@ public class Sort  {
         for (int i = 0; i < nums.length; i++) {
             asStrs[i] = String.valueOf(nums[i]);
         }
-
         // Sort strings according to custom comparator.
         Arrays.sort(asStrs, new LargerNumberComparator());
-
         // If, after being sorted, the largest number is `0`, the entire number
         // is zero.
         if (asStrs[0].equals("0")) {
             return "0";
         }
-
         // Build largest number from sorted array.
         StringBuilder largestNumberStr = new StringBuilder();
         for (String numAsStr : asStrs) {

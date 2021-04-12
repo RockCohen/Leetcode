@@ -1,4 +1,5 @@
 package tree;
+import javax.xml.stream.events.StartDocument;
 import java.util.*;
 
 
@@ -18,7 +19,6 @@ public class TreeOperating {
             recursionMiddleOrderTraversal(root.right,res);
         }
     }
-
     /**
      * 中序的遍历之堆栈实现。
      * @param root 树根
@@ -63,8 +63,6 @@ public class TreeOperating {
      * 先序遍历
      * @param root 树根
      * @return 先序遍历列表
-     *
-     *
      * 算法细节：
      * 概念前提：先序遍历的顺序：根--->左子树--->右子树。
      * 基本步骤：为了寻求到根所在的右子树，我们需要将根节点借助数据结构栈来存储。并且先遍历栈顶元素，然后再考虑其左子树与右子树。
@@ -74,8 +72,8 @@ public class TreeOperating {
      */
     public List<Integer> stackFirstOrderTraversal(TreeNode root){//先序遍历
         Stack<TreeNode> treeNodeStack =new Stack<>();
-        TreeNode node=root;
         List<Integer> res=new ArrayList<>();
+        TreeNode node=root;
         while(node!=null||!treeNodeStack.isEmpty()){
             //根节点入栈，并且访问之
             if(node!=null){
@@ -93,12 +91,34 @@ public class TreeOperating {
     }
 
     /**
+     * 题目：二叉树展开为链表
+     * @param root
+     * @see https://leetcode-cn.com/problems/flatten-binary-tree-to-linked-list/
+     * 题解思路：
+     * 1. 先序遍历：使用列表存储线序遍历结果。（递归方式与迭代方式）
+     * 2. 寻找前驱节点：https://leetcode-cn.com/problems/flatten-binary-tree-to-linked-list/solution/er-cha-shu-zhan-kai-wei-lian-biao-by-leetcode-solu/
+     */
+    public void flatten(TreeNode root) {
+        TreeNode curr = root;
+        while (curr != null) {
+            if (curr.left != null) {
+                TreeNode next = curr.left;
+                TreeNode predecessor = next;
+                while (predecessor.right != null) {
+                    predecessor = predecessor.right;
+                }
+                predecessor.right = curr.right;
+                curr.left = null;
+                curr.right = next;
+            }
+            curr = curr.right;
+        }
+    }
+
+    /**
      * 后序遍历
      * @param root 树根
      * @return 后序遍历列表
-     *
-     *
-     *
      * 算法思想：
      * 概念前提：访问顺序：左子树--->右子树--->根
      * 基本步骤：根节点入栈，左子树入栈访问之，左子树退栈，右子树入栈，访问之，最后访问根节点。
@@ -169,34 +189,11 @@ public class TreeOperating {
         return result;
     }
     /**
-     * 二叉树的两数之和
-     * 给定一个二叉搜索树和一个目标结果，如果 BST 中存在两个元素且它们的和等于给定的目标结果，则返回 true。
-     * 案例 1:
-     *
-     * 输入:
-     *     5
-     *    / \
-     *   3   6
-     *  / \   \
-     * 2   4   7
-     *
-     * Target = 9
-     *
-     * 输出: True
-     * 案例 2:
-     *
-     * 输入:
-     *     5
-     *    / \
-     *   3   6
-     *  / \   \
-     * 2   4   7
-     *
-     * Target = 28
-     *
-     * 输出: False
+     * 题目：二叉树的两数之和
+     * 参考：
      * 首先想到的解题思路便是：借助增序数组来解决这个问题。
-     * 根据BST的元素的特征，通过中序遍历将元素放入一个有序数组中，然后再利用双指针的方式对增序数组进行检索。这样一来，主要的问题便是引入了O(n)的空间复杂度。
+     * 根据BST的元素的特征，通过中序遍历将元素放入一个有序数组中，然后再利用双指针的方式对增序数组进行检索。
+     * 这样一来，主要的问题便是引入了O(n)的空间复杂度。
      * 有没有原位操作的算法呢？目前来看，原为操作的成本显然很大。
      */
     public boolean findTarget(TreeNode root, int k) {
@@ -214,27 +211,11 @@ public class TreeOperating {
 
     /**
      * 103. 二叉树的锯齿形层序遍历
-     * 给定一个二叉树，返回其节点值的锯齿形层序遍历。（即先从左往右，再从右往左进行下一层遍历，以此类推，层与层之间交替进行）。
-     *
-     * 例如：
-     * 给定二叉树 [3,9,20,null,null,15,7],
-     *
-     *     3
-     *    / \
-     *   9  20
-     *     /  \
-     *    15   7
-     * 返回锯齿形层序遍历如下：
-     *
-     * [
-     *   [3],
-     *   [20,9],
-     *   [15,7]
-     * ]
+     * @auhtor Rock
+     * @param root 树根
+     * @return 列表
+     * @see  https://leetcode-cn.com/problems/binary-tree-zigzag-level-order-traversal/
      * 题解思路：使用队列来记录子节点的访问顺序。并且设置计数器来决定每层子节点的个数。
-     * 算法步骤：
-     * @param root
-     * @return
      */
     public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
         List<List<Integer>> res=new ArrayList<>();
@@ -267,90 +248,6 @@ public class TreeOperating {
             isPreface=!isPreface;
             }
         return res;
-    }
-
-    /**
-     * 331. 验证二叉树的前序序列化
-     * 序列化二叉树的一种方法是使用前序遍历。当我们遇到一个非空节点时，我们可以记录下这个节点的值。如果它是一个空节点，我们可以使用一个标记值记录，例如 #。
-     *
-     *      _9_
-     *     /   \
-     *    3     2
-     *   / \   / \
-     *  4   1  #  6
-     * / \ / \   / \
-     * # # # #   # #
-     * 例如，上面的二叉树可以被序列化为字符串 "9,3,4,#,#,1,#,#,2,#,6,#,#"，其中 # 代表一个空节点。
-     *
-     * 给定一串以逗号分隔的序列，验证它是否是正确的二叉树的前序序列化。编写一个在不重构树的条件下的可行算法。
-     *
-     * 每个以逗号分隔的字符或为一个整数或为一个表示 null 指针的 '#' 。
-     *
-     * 你可以认为输入格式总是有效的，例如它永远不会包含两个连续的逗号，比如 "1,,3" 。
-     *
-     * 示例 1:
-     *
-     * 输入: "9,3,4,#,#,1,#,#,2,#,6,#,#"
-     * 输出: true
-     * 示例 2:
-     *
-     * 输入: "1,#"
-     * 输出: false
-     * 示例 3:
-     *
-     * 输入: "9,#,#,1"
-     * 输出: false
-     * 题解思路就是：一个数字跟随两个#抵消之后形成一个#。然后将其入栈，最后判断栈是否为#。
-     * 显然这个题充分体现了二叉树的递归性质。这也是为什么与栈有关系的原因。这个题值得深刻的思考。
-     * @param preorder
-     * @return
-     */
-    //9,3,4,#,#,1,#,#,2,#,6,#,#
-    //9,3,#,1,#,#,2,#,6,#,#
-    //9,3,#,1,#,#,2,#,6,#,#
-    //9,3,#,#,2,#,6,#,#
-    //9,#,2,#,6,#,#
-    // 9,#,2,#,#
-    //9,#,#
-    //#
-    public boolean isValidSerialization(String preorder) {
-       List<String> pre=preProcess(preorder);
-       int i=0;
-       while(pre.size()>2&&i<pre.size()-2){
-           if(!pre.get(i).equals("#")&&pre.get(i+1).equals("#")&&pre.get(i+2).equals("#")){
-               pre.remove(i);
-               pre.remove(i);
-               i--;
-               if(i<0)return false;
-           }
-           else i++;
-           if(i==pre.size()-2)i=0;
-       }
-       if(pre.size()==1&&pre.get(0).equals("#")) return true;
-       else return false;
-    }
-    //9,3,4,#,#,1,#,#,2,#,6,#,#
-    public List<String> preProcess(String preorder){
-        List<String> strings=new ArrayList<>();
-        int i=0;
-        int j=0;
-        while(i<preorder.length()){
-            if(String.valueOf(preorder.charAt(i)).equals(",")){
-                i++;
-            }
-            else if(String.valueOf(preorder.charAt(i)).equals("#")){
-                strings.add("#");
-                i++;
-
-            }
-            else {
-                j = i;
-                while (j < preorder.length() && Character.isDigit(preorder.charAt(j))) j++;
-                strings.add(preorder.substring(i, j));
-                i = j;
-            }
-        }
-        return strings;
     }
     /**
      * 题解思路：层遍历，记录最右边的元素添加到结果数组即可。
@@ -405,11 +302,69 @@ public class TreeOperating {
         return true;
     }
 
-public static void main(String[] args){
-    TreeNode root=new TreeNode(4,new TreeNode(2,null,new TreeNode(3)),new TreeNode(5,null,new TreeNode(6)));
-    boolean res=new TreeOperating().isValidBST(root);
-    System.out.println(res);
-}
+    /**
+     * 题目：路径总和
+     * @author Rock
+     * @param root
+     * @param targetSum
+     * @return
+     * @see https://leetcode-cn.com/problems/path-sum/
+     * 题解思路：
+     * 1. 广度优先搜索
+     * 2. 深度优先搜索
+     * 3. 递归（子问题的组合是关键）
+     */
+    public boolean hasPathSum(TreeNode root, int targetSum) {
+        if(root==null) {
+            return false;
+        }
+        if(root.left==null&&root.right==null){
+            return targetSum==root.val;
+        }
+        else {
+           return  hasPathSum(root.left,targetSum-root.val)||hasPathSum(root.right,targetSum-root.val);
+        }
+    }
+    /**
+     * 题目：路径总和II
+     * @author Rock
+     * @param root
+     * @param targetSum
+     * @return
+     * @see https://leetcode-cn.com/problems/path-sum-ii/
+     * 题解思路：
+     * 1. 深度优先搜索 :枚举每一条从根节点到叶子节点的路径。
+     *   当遍历到叶子节点，且此时路径和恰为目标和时，就找到了一条满足条件的路径。
+     * 2. 广度优先搜索
+     */
+    //全局变量
+    List<List<Integer>> ret = new LinkedList<List<Integer>>();
+    Deque<Integer> path = new LinkedList<Integer>();
+    public List<List<Integer>> pathSum(TreeNode root, int sum) {
+        dfs(root, sum);
+        return ret;
+    }
+    /**
+     * 这里提供了一种思路：通过定义全局变量，利用void类型的方法直接对该全局变量进行操作处理。
+     * @param root
+     * @param sum
+     */
+    public void dfs(TreeNode root, int sum) {
+        if (root == null) return;
+        path.offerLast(root.val);
+        sum -= root.val;
+        if (root.left == null && root.right == null && sum == 0) {
+            ret.add(new LinkedList<Integer>(path));
+        }
+        dfs(root.left, sum);
+        dfs(root.right, sum);
+        path.pollLast();
+    }
+    public static void main(String[] args){
+        TreeNode root=new TreeNode(4,new TreeNode(2,null,new TreeNode(3)),new TreeNode(5,null,new TreeNode(6)));
+        boolean res=new TreeOperating().isValidBST(root);
+        System.out.println(res);
+    }
 }
 
 
