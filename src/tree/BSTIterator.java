@@ -1,5 +1,8 @@
 package tree;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 173. 二叉搜索树迭代器
  * 实现一个二叉搜索树迭代器。你将使用二叉搜索树的根节点初始化迭代器。
@@ -27,12 +30,34 @@ package tree;
  *
  */
 public class BSTIterator {
+    List<Integer> res;
+    int index=-1;
     public BSTIterator(TreeNode root) {
+        res=new ArrayList<>();
+        recursionMiddleOrderTraversal(root,res);
     }
     public int next() {
-        return 0;
+        index++;
+        if(hasNext())return res.get(index);
+        else try {
+            throw new Exception();
+        } catch (Exception e) {
+            return -1;
+        }
     }
     public boolean hasNext() {
-        return true;
+        return index < res.size()-1;
+    }
+    public void recursionMiddleOrderTraversal(TreeNode root, List<Integer> res){
+        if(root!=null){
+            recursionMiddleOrderTraversal(root.left,res);
+            res.add(root.val);
+            recursionMiddleOrderTraversal(root.right,res);
+        }
+    }
+    public static void main(String[] args) {
+        TreeNode root=new TreeNode(4,new TreeNode(2,null,new TreeNode(3)),new TreeNode(5,null,new TreeNode(6)));
+        BSTIterator bstIterator=new BSTIterator(root);
+        System.out.println(bstIterator.next());
     }
 }

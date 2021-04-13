@@ -95,8 +95,9 @@ public class TreeOperating {
      * @param root
      * @see https://leetcode-cn.com/problems/flatten-binary-tree-to-linked-list/
      * 题解思路：
-     * 1. 先序遍历：使用列表存储线序遍历结果。（递归方式与迭代方式）
+     * 1. 先序遍历：使用列表存储先序遍历结果。（递归方式与迭代方式）
      * 2. 寻找前驱节点：https://leetcode-cn.com/problems/flatten-binary-tree-to-linked-list/solution/er-cha-shu-zhan-kai-wei-lian-biao-by-leetcode-solu/
+     *    关于寻找二叉树的前驱节点类似于建立线索二叉树。所以直接使用线索二叉树的思想来解决此问题。
      */
     public void flatten(TreeNode root) {
         TreeNode curr = root;
@@ -360,9 +361,252 @@ public class TreeOperating {
         dfs(root.right, sum);
         path.pollLast();
     }
+
+    /**
+     * 题目:根节点到叶节点的总和
+     * @param root
+     * @return
+     * @see https://leetcode-cn.com/problems/sum-root-to-leaf-numbers/
+     * 题解思路：深度优先搜索 直接参考上述的模板来解决这个问题。
+     */
+    public int sumNumbers(TreeNode root) {
+        int res=0;
+        dfsHelper(root);
+        for (List<Integer> integers : ret) {
+            int sum = 0;
+            for (Integer integer : integers) {
+                sum = (sum * 10 + integer);
+            }
+            res += sum;
+        }
+        return res;
+    }
+    private void dfsHelper(TreeNode root){
+        if(root==null)return ;
+        path.offerLast(root.val);
+        if(root.left==null&&root.right==null){
+            ret.add(new LinkedList<Integer>(path));
+        }
+        dfsHelper(root.left);
+        dfsHelper(root.right);
+        path.pollLast();
+    }
+
+    /**
+     * 题目：翻转二叉树
+     * @author Rock
+     * @param root
+     * @return
+     * @see https://leetcode-cn.com/problems/invert-binary-tree/
+     * 题解思路：简单的递归可解
+     */
+    public TreeNode invertTree(TreeNode root) {
+        if(root==null)return null;
+        else{
+            TreeNode left=invertTree(root.left);
+            root.left= invertTree(root.right);
+            root.right=left;
+            return root;
+        }
+    }
+
+    /**
+     * 题目：二叉搜索树中第k小的节点
+     * @author Rock
+     * @param root
+     * @param k
+     * @return
+     * @see https://leetcode-cn.com/problems/kth-smallest-element-in-a-bst/
+     * 题解思路：该题目也是引入全局变量的方式来记录答案以及行为轨迹。
+     *         与求二叉树路径总和的题目类似，该种思想值得借鉴，也值得总结。
+     */
+    int count=0;
+    int ans=-1;
+    boolean flag=false;
+    public int kthSmallest(TreeNode root, int k) {
+        help(root,k);
+        return ans;
+    }
+    void help(TreeNode root,int k){
+        if(root==null)
+            return;
+        help(root.left,k);
+        // 中序遍历是有序序列
+        // count 记录已遍历的长度
+        // k==count 时 就是要找的值
+        // 但是我们要提前返回，右边分支就不用遍历了
+        // 右边不遍历，所以count值不会再变化了，所以 ans 可能会被覆盖，需要加判断，只修改一次
+        count++;
+        if(k==count){
+            if(!flag){
+                ans=root.val;
+                flag=true;
+            }
+            return;
+        }
+        if(k>count)
+            help(root.right,k);
+    }
+
+    /**
+     * 题目：二叉搜索树中相连两点之间差值最小值。
+     * @param root
+     * @return
+     * @see https://leetcode-cn.com/problems/minimum-distance-between-bst-nodes/
+     * 题解思路：
+     * 1. 深度优先搜索，显然这个题目需要借助中序遍历实现，那么最重要的思想就是利用深度优先搜索了。
+     *    在遍历过程中，我们显然记录两个信息，一个是当前遍历过程中的最小值；
+     *    另一个是当前遍历节点的上一个节点，做差时需要的数据。
+     */
+    int pre;//记录前一个节点
+    int res;//记录当前的最小值
+    public int minDiffInBST(TreeNode root) {
+        pre=-1;
+        res=Integer.MAX_VALUE;
+        minDiffInBSTDFS(root);
+        return res;
+    }
+    private void minDiffInBSTDFS(TreeNode root){
+        if(root==null)return ;
+        minDiffInBSTDFS(root.left);
+        if (pre != -1) {
+            ans = Math.min(ans, root.val - pre);
+        }
+        pre = root.val;
+        minDiffInBSTDFS(root.right);
+    }
+
+    /**
+     * 二叉搜索树两节点的公共祖先
+     * @author Rock
+     * @param root
+     * @param p
+     * @param q
+     * @return
+     * @see https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-search-tree/
+     * 题解思路：充分利用二叉搜索树的性质
+     */
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if(root.val < p.val && root.val < q.val) return lowestCommonAncestor(root.right, p, q);
+        if(root.val > p.val && root.val > q.val) return lowestCommonAncestor(root.left, p, q);
+        return root;
+    }
+
+    /**
+     * 题目：N叉树的层遍历
+     * @author Rock
+     * @param root
+     * @return
+     * @see https://leetcode-cn.com/problems/n-ary-tree-level-order-traversal/
+     * 题解思路：二叉树的层遍历同样的思路。
+     */
+    public List<List<Integer>> levelOrder(Node root) {
+        List<List<Integer>> res=new ArrayList<>();
+        Queue<Node> queue=new LinkedList<>();
+        if(root==null)return res;
+        queue.offer(root);
+        int count=1;
+        int childCount=0;
+        while(!queue.isEmpty()){
+            List<Integer> list=new ArrayList<>();
+            while(count>0){
+                Node node=queue.poll();
+                assert node != null;//逻辑判断其实根本不肯能产生null指针。
+                list.add(node.val);
+                for(Node node1:node.children){
+                    queue.offer(node1);
+                    childCount++;
+                }
+                count--;
+            }
+            res.add(list);
+            count=childCount;
+            childCount=0;
+        }
+        return res;
+    }
+
+    /**
+     * 题目：删除搜索二叉树中的节点
+     * @param root
+     * @param key
+     * @return
+     * @see https://leetcode-cn.com/problems/delete-node-in-a-bst/
+     * 题解思路：
+     * 1. 让被删除节点的右子节点补位，如果其右子节点的左孩子为空，完成；不为空时，将其作为被删除节点的左孩子的最右子节点。
+     *    如果其左子树为空，结束，如果不为空，按照上面给的操作即可。
+     *    如果其右子节点不存在，直接让其左子节点补位，完成。
+     *
+     * 技巧：与链表操作中引入头节点增加操作的便利性一样，这里也引入一个虚拟的根节点，这样在删除根节点的情况下，与删除其他节点一样。
+     *
+     */
+    public TreeNode deleteNode(TreeNode root, int key) {
+        TreeNode head=new TreeNode(0);
+        head.left=root;
+        TreeNode cur=root;
+        TreeNode pre=null;
+        int flag=0;
+        //寻找需要删除的节点与其父亲节点。
+        while(cur!=null){
+            if(key==cur.val)break;
+            else{
+                if(key>cur.val){
+                    pre=cur;
+                    cur=cur.right;
+                    flag=1;
+                }
+                else{
+                    pre=cur;
+                    cur=cur.left;
+                    flag=2;
+                }
+            }
+        }
+        if(cur==null)return root;//不存在需要删除的节点，这种情况通常不存在。
+        TreeNode right=cur.right;//记录需要删除节点的右节点
+        TreeNode left=cur.left;//需要删除节点的左节点
+        if(pre==null){
+            pre=head;
+            flag=2;
+        }
+        if(left==null&&right==null){
+            if(flag==1){
+                pre.right=null;
+            }
+            else pre.left=null;
+        }
+        else if(left==null){
+            if(flag==1)pre.right=right;
+            else pre.left=right;
+        }
+        else if(right==null){
+            if(flag==1)pre.right=left;
+            else pre.left=left;
+        }
+        else {
+            if(flag==1){
+                pre.right=right;
+            }
+            else{
+                pre.left=right;
+            }
+            TreeNode node=right.left;
+            right.left=left;
+            while(left.right!=null){
+                left=left.right;
+            }
+            left.right=node;
+        }
+        return head.left;
+    }
+    private TreeNode find(TreeNode root,int key){
+        if(root.val==key)return root;
+        else if(root.val<key)return find(root.right,key);
+        else return find(root.left,key);
+    }
     public static void main(String[] args){
-        TreeNode root=new TreeNode(4,new TreeNode(2,null,new TreeNode(3)),new TreeNode(5,null,new TreeNode(6)));
-        boolean res=new TreeOperating().isValidBST(root);
+        TreeNode root=new TreeNode(90,new TreeNode(69,new TreeNode(49,null,new TreeNode(52)),new TreeNode(89)),null);
+        int res=new TreeOperating().minDiffInBST(root);
         System.out.println(res);
     }
 }
