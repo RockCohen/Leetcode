@@ -130,4 +130,34 @@ public class DP {
         return ans;
     }
 
+    /**
+     * 题目：译码
+     * @param s
+     * @return
+     * @see https://leetcode-cn.com/problems/decode-ways/
+     * 题解思路：
+     * 仔细观察子问题结构，显然这个题目可以动态规划来求解。下面给出递推公式。
+     * f[i]=s[i]!=0?f[i-1]:0+(s[i-2]!0&&decodable([i-1][i]))?f[i-2]:0;(2<=i<=n)
+     * f[0]=1;
+     * f[1]=1;
+     * 解释：
+     */
+    public int numDecodings(String s) {
+        int [] f=new int[s.length()+1];
+        f[0]=1;
+        for(int i=1;i<=s.length();i++){
+            if (s.charAt(i - 1) != '0') {
+                f[i] += f[i - 1];
+            }
+            if (i > 1 && s.charAt(i - 2) != '0' && ((s.charAt(i - 2) - '0') * 10 + (s.charAt(i - 1) - '0') <= 26)) {
+                f[i] += f[i - 2];
+            }
+        }
+        return f[s.length()];
+    }
+    public static void main(String[] args) {
+       int number= new DP().numDecodings("06");
+       System.out.println(number);
+    }
+
 }

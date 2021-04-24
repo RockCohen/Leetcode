@@ -341,6 +341,35 @@ public class Sort  {
         if (k >= 0) System.arraycopy(points, 0, res, 0, k);
         return res;
     }
+
+    /**
+     * 题目：查找和最小的K对数字
+     * @param nums1
+     * @param nums2
+     * @param k
+     * @return
+     * @see https://leetcode-cn.com/problems/find-k-pairs-with-smallest-sums/
+     *
+     * 题解思路：基于两数组的有序性，我们可以借助合并两个有序数组的思路来解决此问题。
+     */
+    public List<List<Integer>> kSmallestPairs(int[] nums1, int[] nums2, int k) {
+//        int count=nums1.length*nums2.length;
+//        int i=0;
+//        int j=0;
+//        List<Integer> list=new ArrayList<>();
+//        list.add(nums1[0]);
+//        list.add(nums2[0]);
+//        List<List<Integer>> res=new ArrayList<>();
+//        res.add(list);
+//        while(i<nums1.length-1&&j<nums2.length-1){
+//            int a=nums1[i]+nums2[j+1];
+//            int b=nums1[i+1]+nums2[j];
+//            int min=
+//
+//        }
+        return null;
+
+    }
     public static void main(String[] args) {
         int[][] points={{1,3},{-2,2},{3,3},{4,1}};
         System.out.println(Arrays.deepToString(new Sort().kClosest(points, 2)));
