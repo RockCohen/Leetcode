@@ -604,6 +604,32 @@ public class TreeOperating {
         else if(root.val<key)return find(root.right,key);
         else return find(root.left,key);
     }
+
+    /**
+     * 题目：中序遍历的线索化（使得每个节点的左孩子为空，右孩子指向其后续节点）
+     * @param root
+     * @return
+     */
+    public TreeNode increasingBST(TreeNode root) {
+        List<Integer> res = new ArrayList<Integer>();
+        inorder(root, res);
+        TreeNode dummyNode = new TreeNode(-1);
+        TreeNode currNode = dummyNode;
+        for (int value : res) {
+            currNode.right = new TreeNode(value);
+            currNode = currNode.right;
+        }
+        return dummyNode.right;
+    }
+
+    public void inorder(TreeNode node, List<Integer> res) {
+        if (node == null) {
+            return;
+        }
+        inorder(node.left, res);
+        res.add(node.val);
+        inorder(node.right, res);
+    }
     public static void main(String[] args){
         TreeNode root=new TreeNode(90,new TreeNode(69,new TreeNode(49,null,new TreeNode(52)),new TreeNode(89)),null);
         int res=new TreeOperating().minDiffInBST(root);

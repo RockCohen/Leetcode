@@ -1,6 +1,6 @@
 package dynamicProgramming;
 
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * 动态规划：
@@ -154,6 +154,92 @@ public class DP {
             }
         }
         return f[s.length()];
+    }
+
+    /**
+     * 题目：最大整除数集
+     * @param nums
+     * @return
+     * @see https://leetcode-cn.com/problems/largest-divisible-subset/
+     * 题解思路：
+     * 动态规划,需要记录当前最大整除数集的最大元素与个数。
+     */
+    public List<Integer> largestDivisibleSubset(int[] nums) {
+        int len = nums.length;
+        Arrays.sort(nums);
+
+        // 第 1 步：动态规划找出最大子集的个数、最大子集中的最大整数
+        int[] dp = new int[len];
+        Arrays.fill(dp, 1);
+        int maxSize = 1;
+        int maxVal = dp[0];
+        for (int i = 1; i < len; i++) {
+            for (int j = 0; j < i; j++) {
+                // 题目中说「没有重复元素」很重要
+                if (nums[i] % nums[j] == 0) {
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
+                }
+            }
+
+            if (dp[i] > maxSize) {
+                maxSize = dp[i];
+                maxVal = nums[i];
+            }
+        }
+
+        // 第 2 步：倒推获得最大子集
+        List<Integer> res = new ArrayList<Integer>();
+        if (maxSize == 1) {
+            res.add(nums[0]);
+            return res;
+        }
+
+        for (int i = len - 1; i >= 0 && maxSize > 0; i--) {
+            if (dp[i] == maxSize && maxVal % nums[i] == 0) {
+                res.add(nums[i]);
+                maxVal = nums[i];
+                maxSize--;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 题目：组合总和IV
+     * @param nums
+     * @param target
+     * @return
+     * @see https://leetcode-cn.com/problems/combination-sum-iv/
+     *
+     * 题解思路：
+     * 给出例子：[1,2,3]----->4
+     * 上述的问题可以分为子问题：
+     *                     [1,2,3]----->3;    ====>[1,....]
+     *                     [1,2,3]----->2;    ====>[2,....]
+     *                     [1,2,3]----->1;    ====>[3,....]
+     * 上述的分析显然已经看出，可以通过递归，动态规划的方法来解决。于是我们可以建立如下的递推公式：
+     *
+     *   combinationSum(num,target)= ∑ coninationSum(num,target-num[i])   (0<=i<n,n=num.length)
+     * 显然上述建立了递归的地推公式，但是通过上述的分析，我们不难发现，存在子问题重复求解的问题。
+     * 为了避免重复子问题的求解，我们提出了动态规划的方案。
+     *   上述的问题可以抽象成：
+     *   dp[i]=∑ (dp[i-num[j]]) (0<=j<=i,1<=i<=target)
+     *   初始化 dp[0]=1；
+     * 遍历 i 从 1到 target，对于每个 i，进行如下操作：
+     * 遍历数组 nums 中的每个元素 num，当 num≤i 时，将 dp[i−num] 的值加到 dp[i]。
+     * 最终得到dp[target] 的值即为答案。
+     */
+    public int combinationSum4(int[] nums, int target) {
+        int[] dp = new int[target + 1];
+        dp[0] = 1;
+        for (int i = 1; i <= target; i++) {
+            for (int num : nums) {
+                if (num <= i) {
+                    dp[i] += dp[i - num];
+                }
+            }
+        }
+        return dp[target];
     }
     public static void main(String[] args) {
        int number= new DP().numDecodings("06");
