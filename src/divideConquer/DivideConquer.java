@@ -1,5 +1,7 @@
 package divideConquer;
 
+import java.util.Arrays;
+
 /**
  * 分治算法：分支算法要求问题本质是递归的，算法多次调用自身去解决子问题，然后将子问题的解进行合并得到问题的解。
  * 分治法的思想本质：
@@ -143,7 +145,6 @@ public class DivideConquer {
         return 0;
 
     }
-
     public static void main(String[] args) {
         int[] nums={-2,1,-3,4,-1,2,1,-5,4};
         System.out.println(new DivideConquer().maxSubArray(nums));
