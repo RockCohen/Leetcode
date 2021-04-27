@@ -630,6 +630,58 @@ public class TreeOperating {
         res.add(node.val);
         inorder(node.right, res);
     }
+
+
+    int s=0;
+    /**
+     * 题目：二叉搜索树的范围和
+     * @param root
+     * @param low
+     * @param high
+     * @return
+     * @see https://leetcode-cn.com/problems/range-sum-of-bst/
+     * 题解：直接深度优先搜索。但是这种方法并没有完全利用搜索树的特性。
+     * 因此可以在深度优先算法的基础上进行改良。
+     * 我们需要判断当前节点是否在范围内；
+     * 1. 如果在那么继续遍历的左右子树；
+     * 2. 如果小于下界，那么其左子树不必遍历；
+     * 3. 如果大于上界，那么其右子树不必遍历。
+     */
+    public int rangeSumBST(TreeNode root, int low, int high) {
+        return sum(root,low,high);
+    }
+
+    /**
+     * 该方法直接遍历所有节点判断对应节点的范围。时间复杂度O(n)
+     * @param root
+     * @param low
+     * @param high
+     * @return
+     */
+    public int sum(TreeNode root,int low,int high){
+        if(root==null)return 0;
+        s=((root.val>=low&&root.val<=high)?root.val:0);
+        return s+sum(root.left,low,high)+sum(root.right,low,high);
+    }
+
+    /**
+     * 该方法利用二叉搜索树的特性，对当前节点的范围进行判断来确定是否进行子树的遍历。
+     * 时间复杂度小于O(n).最大的时间复杂度为O(n)，此时所有的节点均在范围之内。
+     * @param root
+     * @param low
+     * @param high
+     * @return
+     */
+    private int sumSearch(TreeNode root,int low,int high){
+        if(root==null)return 0;
+        if(root.val<low){
+            return sumSearch(root.right,low,high);
+        }
+        else if(root.val>high){
+            return sumSearch(root.left,low,high);
+        }
+        else return root.val+sumSearch(root.left,low,high)+sumSearch(root.right,low,high);
+    }
     public static void main(String[] args){
         TreeNode root=new TreeNode(90,new TreeNode(69,new TreeNode(49,null,new TreeNode(52)),new TreeNode(89)),null);
         int res=new TreeOperating().minDiffInBST(root);
