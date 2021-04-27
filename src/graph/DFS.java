@@ -30,7 +30,7 @@ public class DFS {
         for (int node = 1; node <= N; ++node)
             dist.put(node, Integer.MAX_VALUE);
 
-        dfs(graph, K, 0);
+        dfsNetworkDelayTime(graph, K, 0);
         int ans = 0;
         for (int candy: dist.values()) {
             if (candy == Integer.MAX_VALUE) return -1;
@@ -38,14 +38,21 @@ public class DFS {
         }
         return ans;
     }
-    public void dfs(Map<Integer, List<int[]>> graph, int node, int elapsed) {
+    public void dfsNetworkDelayTime(Map<Integer, List<int[]>> graph, int node, int elapsed) {
         if (elapsed >= dist.get(node)) return;
         dist.put(node, elapsed);
         if (graph.containsKey(node))
             for (int[] info: graph.get(node))
-                dfs(graph, info[1], elapsed + info[0]);
+                dfsNetworkDelayTime(graph, info[1], elapsed + info[0]);
     }
 
+    /**
+     * 解法二：
+     * @param times
+     * @param N
+     * @param K
+     * @return
+     */
     public int networkDelayTimeII(int[][] times, int N, int K) {
         // time[i]: node [i] receive time
         int[] time = new int[N+1];
@@ -62,7 +69,7 @@ public class DFS {
             graph[from].add(new int[]{to, w});
         }
 
-        dfs(graph, time, K);
+        dfsNetworkDelayTimeII(graph, time, K);
 
         int max = -1;
         for (int i = 1; i <= N; ++i) {
@@ -72,7 +79,7 @@ public class DFS {
         return max;
     }
 
-    public void dfs(List<int[]>[] graph, int[] time, int node) {
+    public void dfsNetworkDelayTimeII(List<int[]>[] graph, int[] time, int node) {
         for (int[] t : graph[node]) {
             int to = t[0], w = t[1];
             int newTime = time[node] + w;
@@ -80,8 +87,10 @@ public class DFS {
                 continue;
             }
             time[to] = newTime;
-            dfs(graph, time, to);
+            dfsNetworkDelayTimeII(graph, time, to);
         }
     }
+
+
 
 }
