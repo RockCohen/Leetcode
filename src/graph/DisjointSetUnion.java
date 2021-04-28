@@ -1,11 +1,15 @@
 package graph;
 
+/**
+ * 并查集相关题目
+ */
 public class DisjointSetUnion {
     /**
      * 题目：冗余链接
      * @param edges 图
      * @return
      * @see https://leetcode-cn.com/problems/redundant-connection/
+     * 题解思路：直接套用并查集模板即可搞定。
      */
     int[] res;
     public int[] findRedundantConnection(int[][] edges) {
