@@ -167,11 +167,21 @@ public class Offer {
         }
         return res;
     }
+    public ListNode deleteNode(ListNode head, int val) {
+        ListNode root=new ListNode(0);//增加头结点，提供删除的便利性
+        root.next=head;
+        ListNode p=root;
+        while(p.next!=null&&p.next.val!=val)p=p.next;
+        if(p.next==null)return root.next;
+        p.next=p.next.next;
+        return root.next;
+    }
 
     public static void main(String[] args) {
-       //int [] n={3,3,3,3,3,1,3,3};
-       int res=new Offer().hammingWeight(-3);
+       ListNode head=new ListNode(3);//ListNode(0,new ListNode(1,new ListNode(2)));
+       ListNode res=new Offer().deleteNode(null,3);
+       if(res==null)System.out.println("res is null");
+       if(res!=null) res.print();
        System.out.println(res);
-
     }
 }
