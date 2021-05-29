@@ -60,6 +60,7 @@ public class DFS {
         time[K] = 0;
 
         // graph[i]: List<int[]>, [to node, w]
+        //将图初始化为三维数组，其中第一位表示开始节点，第二维表示始结点连接的节点。第三个维度表示：距离与链接的节点。
         List<int[]>[] graph = new List[N+1];
         for (int i = 1; i <= N; ++i) {
             graph[i] = new LinkedList<>();

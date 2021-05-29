@@ -2,6 +2,7 @@ package swordPointingOffer;
 
 import list.ListNode;
 
+import tree.TreeNode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -177,6 +178,158 @@ public class Offer {
         return root.next;
     }
 
+    /**
+     * 题目：调整数组顺序使奇数位于偶数前面
+     * @param nums
+     * @return
+     * @see https://leetcode-cn.com/problems/diao-zheng-shu-zu-shun-xu-shi-qi-shu-wei-yu-ou-shu-qian-mian-lcof/
+     * 题解思路：
+     * 双指针。
+     * 左右指针进行检索；
+     * 左指针负责检索未交换的偶数，
+     * 右指针负责检索未交换的奇数。
+     */
+    public int[] exchange(int[] nums) {
+        int l=0;
+        int r=nums.length-1;
+        while(l<r){
+            //左指针检索偶数
+            if(nums[l]%2==1){
+                l++;
+                continue;
+            }
+            //右指针检索奇数
+            if(nums[r]%2==0){
+                r--;
+                continue;
+            }
+            //交换过程
+            if(nums[l]%2==0&&nums[r]%2==1){
+                int temp=nums[l];
+                nums[l]=nums[r];
+                nums[r]=temp;
+            }
+        }
+        return nums;
+    }
+    /**
+     * 题目：链表的倒数第k个节点
+     * @see https://leetcode-cn.com/problems/lian-biao-zhong-dao-shu-di-kge-jie-dian-lcof/
+     * @param head 头节点
+     * @param k 参数k
+     * @return node
+     * 题解思路：
+     * 1. 滑动窗口
+     * 2. 栈（入栈出栈即可）
+     */
+    public ListNode getKthFromEnd(ListNode head, int k) {
+        ListNode p=head;
+        for(int i=1;i<k;i++){
+            if(p==null)return null;
+            else p=p.next;
+        }
+        ListNode node=head;
+        while(p.next!=null){
+            node=node.next;
+            p=p.next;
+        }
+        return node;
+    }
+
+    /**
+     * 题目：反转链表
+     * @param head
+     * @return
+     * @see https://leetcode-cn.com/problems/fan-zhuan-lian-biao-lcof/
+     * 题解思路：
+     * 1. 递归法
+     * 2. 头插法
+     * 3. 栈模拟
+     * 这里提供两种方式：
+     * 1. 递归法
+     * 2. 头插法
+     */
+    public ListNode reverseListRecursion(ListNode head) {//递归
+        if(head==null||head.next==null)return head;
+        ListNode list=reverseListRecursion(head.next);
+        head.next.next=head;
+        head.next=null;
+        return list;
+    }
+    public ListNode reverseListHeadInsert(ListNode head) {//头插
+        if(head==null||head.next==null)return head;
+        ListNode p=head;
+        ListNode q=null;
+        while(p!=null){
+            ListNode node=p.next;
+            p.next=q;
+            q=p;
+            p=node;
+        }
+        return q;
+    }
+
+    /**
+     * 题目：合并两个排序链表
+     * @param l1
+     * @param l2
+     * @return
+     * @see https://leetcode-cn.com/problems/he-bing-liang-ge-pai-xu-de-lian-biao-lcof/
+     * 题解思路：
+     * 1. 递归合并，代码优雅
+     * 2. 模拟合并过程，思路清晰直观
+     * 此处提供优雅的代码：递归
+     */
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        if(l1==null)return l2;
+        if(l2==null)return l1;
+        else if(l1.val<l2.val){
+            l1.next=mergeTwoLists(l1.next,l2);
+            return l1;
+        }
+        else{
+            l2.next=mergeTwoLists(l1,l2.next);
+            return l2;
+        }
+    }
+    /**
+     * 题目：二叉树的镜像
+     * @param root
+     * @return
+     * @see https://leetcode-cn.com/problems/er-cha-shu-de-jing-xiang-lcof/
+     * 题解思路：DFS
+     */
+    public TreeNode mirrorTree(TreeNode root) {
+        if(root==null||(root.left==null&&root.right==null))return root;
+        else {
+            TreeNode temp=root.left;
+            root.left=root.right;
+            root.right=temp;
+            mirrorTree(root.left);
+            mirrorTree(root.right);
+            return root;
+        }
+    }
+    /**
+     * 题目：判断是否为对称二叉树
+     * @param root
+     * @return
+     * @see https://leetcode-cn.com/problems/dui-cheng-de-er-cha-shu-lcof/
+     * 题解思路：
+     * 1. 递归
+     * 借助帮助函数，从根节点对照左右孩子的对称性
+     */
+    public boolean isSymmetric(TreeNode root) {
+        return root == null || recur(root.left, root.right);
+    }
+    boolean recur(TreeNode L, TreeNode R) {
+        if(L == null && R == null) return true;
+        if(L == null || R == null || L.val != R.val) return false;
+        //对称要求
+        //左孩子的左孩子与右孩子的右孩子
+        //左孩子的右孩子与右孩子的左孩子
+        return recur(L.left, R.right) && recur(L.right, R.left);
+    }
     public static void main(String[] args) {
        ListNode head=new ListNode(3);//ListNode(0,new ListNode(1,new ListNode(2)));
        ListNode res=new Offer().deleteNode(null,3);

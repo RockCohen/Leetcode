@@ -245,5 +245,46 @@ public class DP {
        int number= new DP().numDecodings("06");
        System.out.println(number);
     }
+    /**
+     * 题目：最长公共子序列
+     * @see ： https://leetcode-cn.com/problems/longest-common-subsequence/
+     * 题解思路：
+     * 动态规划
+     */
+    public int longestCommonSubsequence(String text1, String text2) {
+
+    }
+    /**
+     * 题目：不相交的线
+     * @param : nums1
+     * @param : nums2
+     * @see ：https://leetcode-cn.com/problems/uncrossed-lines/
+     * 题解思路：
+     * [1,2,4] 
+     * [1,4,2]
+     * [[0,0],[1,2],[2,1]]
+     * 检索上述的中间值，获取非重合区间的个数。可以按照其中一位进行排序，然后检索过程中，记录当前区间的右界。
+     * 
+     * 
+     * 将数组2存入到哈希表中，按序检索数组1中的元素，记录当前的右边界，但是该方法还是无法解决。显然这个问题需要使用动态规划来解决、
+     */
+    public int maxUncrossedLines(int[] nums1, int[] nums2) {
+        Map<Integer,Integer> map=new HashMap<>();
+        int[][] l=new int[num1.length][2];
+        for(int i=0;i<nums1.length;i++){
+            map.put(nums1[i],i);
+        }
+        for(int i=0;i<nums2.length;i++){
+            l[i]=new int[]{i,map.get(nums2[i])};
+        }
+        Arrays.sort(l,(a,b)->a[0]-b[0]);
+        //[[0,0],[1,4],[2,2],[3,3],[4,1]] 
+        for(int i=0;i<l.length;i++){
+
+        }
+
+        
+
+    }
 
 }
