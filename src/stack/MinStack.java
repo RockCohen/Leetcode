@@ -16,15 +16,18 @@ import java.util.List;
  * 题解思路：设定两个栈，
  */
 public class MinStack {
-    List<Integer> list = new ArrayList<>();
-    List<Integer> minStack=new ArrayList<>();
-
+    List<Integer> list;
+    List<Integer> minStack;
     /** initialize your data structure here. */
     public MinStack() {
+        list = new ArrayList<>();
+        minStack=new ArrayList<>();
     }
     public void push(int x) {
         if(minStack.size()==0)minStack.add(x);
         else{
+            //何止是妙，简直就是妙！！！
+            //通过这种方法能保证对应元素在没有被弹出栈之前保证整个栈的最小值依然是当前最小序列的第一个值。
             if(x<minStack.get(0))minStack.add(0,x);
             else minStack.add(0,getMin());
         }
@@ -39,24 +42,5 @@ public class MinStack {
     }
     public int getMin() {
         return minStack.get(0);
-    }
-    public void print(){
-        for(int x:list) System.out.println(x);
-    }
-    public static void main(String[] args){
-        MinStack minStack=new MinStack();
-        minStack.push(2);
-        minStack.push(0);
-        minStack.push(3);
-        minStack.push(0);
-        System.out.println(minStack.getMin());
-        minStack.pop();
-        System.out.println(minStack.getMin());
-        minStack.pop();
-        System.out.println(minStack.getMin());
-        minStack.pop();
-        System.out.println(minStack.getMin());
-
-
     }
 }

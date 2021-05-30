@@ -3,8 +3,8 @@ package swordPointingOffer;
 import list.ListNode;
 
 import tree.TreeNode;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.*;
 
 /**
  * 剑指offer相关题目
@@ -330,11 +330,158 @@ public class Offer {
         //左孩子的右孩子与右孩子的左孩子
         return recur(L.left, R.right) && recur(L.right, R.left);
     }
-    public static void main(String[] args) {
-       ListNode head=new ListNode(3);//ListNode(0,new ListNode(1,new ListNode(2)));
-       ListNode res=new Offer().deleteNode(null,3);
-       if(res==null)System.out.println("res is null");
-       if(res!=null) res.print();
-       System.out.println(res);
+
+    /**
+     * 题目：顺时针打印矩阵
+     * @param matrix
+     * @return
+     * @see https://leetcode-cn.com/problems/shun-shi-zhen-da-yin-ju-zhen-lcof/
+     * 题解思路：
+     *  [1,2,3]
+     *  [4,5,6]
+     *  [7,8,9]
+     *  模拟：控制边界值进行循环
+     */
+    public int[] spiralOrder(int[][] matrix) {
+        if (matrix.length == 0) {
+            return new int[0];
+        }
+        //返回数组内存申请
+        int[] res = new int[matrix.length * matrix[0].length];
+
+        int u = 0, d = matrix.length - 1, l = 0, r = matrix[0].length - 1;
+        int idx = 0;//结果数组的索引
+        while (true) {
+            for (int i = l; i <= r; i++) {
+                res[idx++] = matrix[u][i];
+            }
+            if (++u > d) {
+                break;
+            }
+            for (int i = u; i <= d; i++) {
+                res[idx++] = matrix[i][r];
+            }
+            if (--r < l) {
+                break;
+            }
+            for (int i = r; i >= l; i--) {
+                res[idx++] = matrix[d][i];
+            }
+            if (--d < u) {
+                break;
+            }
+            for (int i = d; i >= u; i--) {
+                res[idx++] = matrix[i][l];
+            }
+            if (++l > r) {
+                break;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 题目：从上到下打印二叉树 II
+     * @param root
+     * @return
+     * @see https://leetcode-cn.com/problems/cong-shang-dao-xia-da-yin-er-cha-shu-ii-lcof/
+     * 题解思路：
+     * 层遍历
+     * 关键数据结构：队列
+     * 
+     */
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> res=new ArrayList<>();
+        if(root==null)return res;
+        Queue<TreeNode> queue=new LinkedList<>();
+        int arrayCount=1;
+        queue.add(root);
+        while(!queue.isEmpty()){
+            List<Integer> arrayList=new ArrayList<>();
+            int count=0;
+            while(!queue.isEmpty()&&arrayCount>0){
+                TreeNode node=queue.poll();
+                arrayList.add(node.val);
+                if(node.left!=null)
+                {
+                    queue.add(node.left);
+                    count++;
+                }
+                if(node.right!=null)
+                {
+                    queue.add(node.right);
+                    count++;
+                }
+                arrayCount--;
+            }
+            res.add(arrayList);
+            arrayCount=count;
+        }
+        return res;
+    }
+
+    /**
+     * 题目：数组中出现次数超过一半的数字
+     * @param nums
+     * @return
+     * 题解思路：
+     * 1. 排序中位数
+     * 2. 哈希求众数
+     * 3. 摩尔投票，相同+1，不同-1，占一半的数必然留到最后
+     */
+    public int majorityElement(int[] nums) {
+        Arrays.sort(nums);
+        return nums[nums.length/2];
+    }
+
+    /**
+     * 题目：最小的k个数
+     * @param arr
+     * @param k
+     * @return
+     * @see https://leetcode-cn.com/problems/zui-xiao-de-kge-shu-lcof/
+     * 题解思路：
+     * 优先队列
+     */
+    public int[] getLeastNumbers(int[] arr, int k) {
+        int[] vec = new int[k];
+        if (k == 0) { // 排除 0 的情况
+            return vec;
+        }
+        PriorityQueue<Integer> queue = new PriorityQueue<Integer>(new Comparator<Integer>() {
+            public int compare(Integer num1, Integer num2) {
+                return num2 - num1;
+            }
+        });
+        for (int i = 0; i < k; ++i) {
+            queue.offer(arr[i]);
+        }
+        for (int i = k; i < arr.length; ++i) {
+            if (queue.peek() > arr[i]) {
+                queue.poll();
+                queue.offer(arr[i]);
+            }
+        }
+        for (int i = 0; i < k; ++i) {
+            vec[i] = queue.poll();
+        }
+        return vec;
+    }
+
+    /**
+     * 题目：连续子数组的最大和
+     * @param nums
+     * @return
+     * @see https://leetcode-cn.com/problems/lian-xu-zi-shu-zu-de-zui-da-he-lcof/
+     * 题解思路：
+     * 动态规划
+     */
+    public int maxSubArray(int[] nums) {
+        int res = nums[0];
+        for(int i = 1; i < nums.length; i++) {
+            nums[i] += Math.max(nums[i - 1], 0);
+            res = Math.max(res, nums[i]);
+        }
+        return res;
     }
 }
