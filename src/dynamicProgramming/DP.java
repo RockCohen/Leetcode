@@ -252,7 +252,7 @@ public class DP {
      * 动态规划
      */
     public int longestCommonSubsequence(String text1, String text2) {
-
+       return 0;
     }
     /**
      * 题目：不相交的线
@@ -270,7 +270,7 @@ public class DP {
      */
     public int maxUncrossedLines(int[] nums1, int[] nums2) {
         Map<Integer,Integer> map=new HashMap<>();
-        int[][] l=new int[num1.length][2];
+        int[][] l=new int[nums1.length][2];
         for(int i=0;i<nums1.length;i++){
             map.put(nums1[i],i);
         }
@@ -282,9 +282,7 @@ public class DP {
         for(int i=0;i<l.length;i++){
 
         }
-
-        
-
+        return 0;
     }
 
 }

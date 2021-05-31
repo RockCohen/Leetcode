@@ -9,7 +9,21 @@ public class Mathematics {
         }
         return false;
     }
-    public static void main(String[] args) {
-        System.out.println(new Mathematics().judgeSquareSum(4));
+
+    /**
+     * 题目：4的幂
+     * @param n
+     * @return
+     * @see https://leetcode-cn.com/problems/power-of-four/
+     * 题解思路：
+     * 模拟即可
+     */
+    public boolean isPowerOfFour(int n) {
+        if(n<=1)return false;
+        while(n!=1){
+            if(n%4!=0)return false;
+            else n/=4;
+        }
+        return true;
     }
 }
