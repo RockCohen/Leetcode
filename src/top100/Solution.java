@@ -2,8 +2,10 @@ package top100;
 
 import list.ListNode;
 
-import javax.swing.plaf.SliderUI;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class Solution {
     /**
@@ -105,47 +107,106 @@ public class Solution {
      * 1. 模拟，先合并数组，然后在求中位数，需要O(m+n)的空间复杂度，时间复杂度也是O(m+n)
      * 2. 模拟，不需要合并数组，只需要找到中位数的索引即可，通过维护两个指针。
      */
-    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
-        int sum=nums1.length+nums2.length;
-        int len=sum/2;
-        int i = 0,j=0;
-        if(nums1.length==0){
-            if(nums2.length%2==0)return (nums2[nums2.length/2]+nums2[nums2.length/2-1])/2.0;
-            else return nums2[nums2.length/2];
-        }
-        if(nums2.length==0){
-            if(nums1.length%2==0)return (nums1[nums1.length/2]+nums1[nums1.length/2-1])/2.0;
-            else return nums1[nums1.length/2];
-        }
-        while(i+j<=len-1){
-            if(nums1[i]<=nums2[j]){
-                i++;
+    public double findMedianSortedArrays(int[] A, int[] B) {
+        int m = A.length;
+        int n = B.length;
+        int len = m + n;
+        int left = -1, right = -1;
+        int aStart = 0, bStart = 0;
+        for (int i = 0; i <= len / 2; i++) {
+            left = right;
+            if (aStart < m && (bStart >= n || A[aStart] < B[bStart])) {
+                right = A[aStart++];
+            } else {
+                right = B[bStart++];
             }
-            else j++;
         }
-        if(sum%2==0){
-            return (nums1[i]+nums2[j])/2.0;
+        if ((len & 1) == 0)
+            return (left + right) / 2.0;
+        else
+            return right;
+    }
+
+    /**
+     * 5. 最长回文子串
+     * @param s
+     * @return
+     * @see https://leetcode-cn.com/problems/longest-palindromic-substring/
+     * 题解思路：
+     * 1. 动态规划 ：P(i,j)=P(i+1,j−1)∧(Si==Sj),P(i,i)=true;
+     * 2. 中心扩展算法 ：回文串的特性决定
+     */
+    public String longestPalindrome(String s) {
+
+        int len=s.length();
+        if(len<2)return s;// 特殊情况，一定是回文串
+
+        int maxLen=1;
+        int begin=0;
+        // dp[i][j]表示s[i,....j]是否为回文子串
+        boolean[][] dp =new boolean[len][len];
+        for(int i=0;i<len;i++){
+            dp[i][i]=true;
         }
-        else return Math.max(nums1[i], nums2[j]);
+
+        char[] charArray = s.toCharArray();
+
+        for(int L=2;L<=len;L++){
+            for(int i=0;i<len;i++){
+                int j=L+i-1;
+                if(j>=len){
+                    break;
+                }
+                if(charArray[i]!=charArray[j]){//首尾字符不相等，一定不是回文串
+                    dp[i][j]=false;
+                }
+                else{
+                    // 如果i,j之间不存在字符，并且s[i]==s[j]，那么一定是回文串
+                    if(j-i<3){
+                        dp[i][j]=true;
+                    }
+                    else{
+                        dp[i][j]=dp[i+1][j-1];
+                    }
+                }
+                // 只要 dp[i][j] == true 成立，就表示子串 s[i..L] 是回文，此时记录回文长度和起始位置
+                if (dp[i][j] && j - i + 1 > maxLen) {
+                    maxLen = j - i + 1;
+                    begin = i;
+                }
+            }
+        }
+        return s.substring(begin, begin + maxLen);
+    }
+
+    public String longestPalindrome_II(String s){
+        if(s==null||s.length()<1){
+            return "";
+        }
+        int start=0,end=0;
+        for(int i=0;i<s.length();i++){
+            int len1=expandAroundCenter(s,i,i);//回文串长度为奇数的情况
+            int len2=expandAroundCenter(s,i,i+1);//回文串长度为偶数的情况
+            int len=Math.max(len1,len2);
+            //根据回文串长度与中心位置算出子串的起始位置与结尾位置。
+            if(len>end-start){
+                start=i-(len-1)/2;
+                end=i+len/2;
+            }
+        }
+        return s.substring(start,end+1);
+    }
+
+    private int expandAroundCenter(String s,int left,int right){
+        while(left>=0&&right<s.length()&&s.charAt(left)==s.charAt(right)){
+            --left;
+            ++right;
+        }
+        return right-left+1;
     }
 
     public static void main(String[] args) {
-        // test 1
-//        int[] nums={3,3,2,4};
-//        final int[] sum = new Solution().twoSum(nums, 6);
-//        System.out.println(Arrays.toString(sum));
-
-        // test 2
-//        ListNode l1=new ListNode(2,new ListNode(4,new ListNode(3)));
-//        ListNode l2=new ListNode(5,new ListNode(6,new ListNode(4)));
-//        final ListNode node = new Solution().addTwoNumbers(l1, l2);
-//        node.print();
-
-        //test 3
-        int[] n={3};
-        int[] m={-2,-1};
-        final double arrays = new Solution().findMedianSortedArrays(n, m);
-        System.out.println(arrays);
+        final Solution solution = new Solution();
 
     }
 }
