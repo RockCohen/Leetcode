@@ -2,10 +2,7 @@ package top100;
 
 import list.ListNode;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Solution {
     /**
@@ -25,6 +22,37 @@ public class Solution {
             else map.put(nums[i],i);
         }
         return new int[0];
+    }
+
+    /**
+     * 15. 三数之和
+     * @param nums
+     * @return
+     * @see https://leetcode-cn.com/problems/3sum/
+     * 题解思路：
+     * 1. 暴力循环，三数之和必然存在O(n^3)的时间复杂度。显然不能通过。
+     * 2. 在 {1. 两数之和} 的基础之上，通过增加一重循环来实现快速查找。当前版本还存在bug
+     */
+    public List<List<Integer>> threeSum(int[] nums) {
+        Arrays.sort(nums);
+        List<List<Integer>> res=new ArrayList<>();
+        for(int i=0;i<nums.length-1;i++){
+            //{-4,-1,-1,0,1,2}
+            Set<Integer> set=new HashSet<>();
+            for(int j=i+1;j<nums.length;j++){
+                int element= -nums[i] - nums[j];
+                if(set.contains(element)){
+                    if(nums[j]==element)break;
+                    List<Integer> item=Arrays.asList(nums[i],nums[j],element);
+                    res.add(item);
+                }else{
+                    set.add(nums[j]);
+                }
+            }
+            if(nums[i]==nums[i+1])i++;
+        }
+        return res;
+        // 通过排序之后依然存在问题：[0,0,0,0],运行结果为：{[0,0,0],[0,0,0]}
     }
 
     /**
@@ -205,8 +233,170 @@ public class Solution {
         return right-left+1;
     }
 
+    /**
+     * 11. 盛最多的水
+     * @param height
+     * @return
+     * @see https://leetcode-cn.com/problems/container-with-most-water/
+     * 题解思路：
+     * 1. 暴力求解，双重循环
+     * 2. 双指针，指针的移动策略是：选择当前指针指向的高度值最小的指针进行移动。
+     */
+    public int maxArea(int[] height) {
+        int left=0;
+        int right=height.length-1;
+        int res=area(height,left,right);
+        while(left<right){
+            if(height[left]>=height[right]){
+                right--;
+            }else{
+                left++;
+            }
+            res=Math.max(res,area(height,left,right));
+        }
+        return res;
+    }
+    private int area(int[] h,int l,int r){
+        return Math.min(h[l],h[r])*(r-l);
+    }
+
+    /**
+     * 17. 电话号码的字母组合
+     * @param digits
+     * @return
+     * @see https://leetcode-cn.com/problems/letter-combinations-of-a-phone-number/
+     * 题解思路：
+     * 1. DFS+回溯
+     */
+    //一个映射表，第二个位置是"abc“,第三个位置是"def"。。。
+    //这里也可以用map，用数组可以更节省点内存
+    String[] letter_map = {" ","*","abc","def","ghi","jkl","mno","pqrs","tuv","wxyz"};
+    public List<String> letterCombinations(String digits) {
+        //注意边界条件
+        if(digits==null || digits.length()==0) {
+            return new ArrayList<>();
+        }
+        iterStr(digits, new StringBuilder(), 0);
+        return res;
+    }
+    //最终输出结果的list
+    List<String> res = new ArrayList<>();
+
+    //递归函数
+    void iterStr(String str, StringBuilder letter, int index) {
+        //递归的终止条件，注意这里的终止条件看上去跟动态演示图有些不同，主要是做了点优化
+        //动态图中是每次截取字符串的一部分，"234"，变成"23"，再变成"3"，最后变成""，这样性能不佳
+        //而用index记录每次遍历到字符串的位置，这样性能更好
+        if(index == str.length()) {
+            res.add(letter.toString());
+            return;
+        }
+        //获取index位置的字符，假设输入的字符是"234"
+        //第一次递归时index为0所以c=2，第二次index为1所以c=3，第三次c=4
+        //subString每次都会生成新的字符串，而index则是取当前的一个字符，所以效率更高一点
+        char c = str.charAt(index);
+        //map_string的下表是从0开始一直到9， c-'0'就可以取到相对的数组下标位置
+        //比如c=2时候，2-'0'，获取下标为2,letter_map[2]就是"abc"
+        int pos = c - '0';
+        String map_string = letter_map[pos];
+        //遍历字符串，比如第一次得到的是2，页就是遍历"abc"
+        for(int i=0;i<map_string.length();i++) {
+            //调用下一层递归，用文字很难描述，请配合动态图理解
+            letter.append(map_string.charAt(i));
+            //如果是String类型做拼接效率会比较低
+            //iterStr(str, letter+map_string.charAt(i), index+1);
+            iterStr(str, letter, index+1);
+            letter.deleteCharAt(letter.length()-1);
+        }
+    }
+
+    /**
+     * 19. 删除链表中的倒数第N个节点
+     * @param head
+     * @param n
+     * @return
+     * @see https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list/
+     * 题解思路：
+     * 1. 滑动窗口
+     */
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+
+        ListNode top=new ListNode(0);
+        top.next=head;
+        ListNode p=top;
+        for(int i=0;i<n;i++){
+            if(p==null)return null;
+            else p=p.next;
+        }
+        ListNode h=top;
+        while(p.next!=null){
+            h=h.next;
+            p=p.next;
+        }
+        h.next=h.next.next;
+        return top.next;
+    }
+
+    /**
+     * 20. 有效的括号
+     * @param s
+     * @return
+     * @see https://leetcode-cn.com/problems/valid-parentheses/
+     * 题解思路：
+     * 1. 栈的应用
+     */
+    public boolean isValid(String s) {
+        List<Character> stack=new LinkedList<>();
+        int i=0;
+        while(i<s.length()){
+            if(stack.isEmpty())stack.add(s.charAt(i));
+            else{
+                if(isMatch(stack.get(stack.size()-1),s.charAt(i))){
+                    stack.remove(stack.size()-1);
+                }
+                else stack.add(s.charAt(i));
+            }
+            i++;
+        }
+        return stack.size()==0;
+
+    }
+    private boolean isMatch(char a,char b){
+        return a == '(' && b == ')' || a == '[' && b == ']' || a == '{' && b == '}';
+    }
+
+    /**
+     * 21. 合并两个有序链表
+     * @param l1
+     * @param l2
+     * @return
+     * @see https://leetcode-cn.com/problems/merge-two-sorted-lists/
+     * 题解思路：
+     * 1. 归并排序
+     * 2. 递归
+     */
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        if(l1==null)return l2;
+        if(l2==null)return l1;
+        if(l1.val<l2.val){
+            l1.next=mergeTwoLists(l1.next,l2);
+            return l1;
+        }else{
+            l2.next=mergeTwoLists(l1,l2.next);
+            return l2;
+        }
+    }
+
+
     public static void main(String[] args) {
         final Solution solution = new Solution();
+
+        ListNode list=new ListNode(1,new ListNode(2,new ListNode(3,new ListNode(4))));
+        ListNode list2=new ListNode(5,new ListNode(6,new ListNode(7,new ListNode(8))));
+
+        final ListNode node = solution.mergeTwoLists(list, list2);
+        node.print();
+
 
     }
 }
