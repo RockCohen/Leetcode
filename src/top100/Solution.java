@@ -10,7 +10,7 @@ public class Solution {
      * @param nums 原数组
      * @param target 目标值
      * @return
-     * @see https://leetcode-cn.com/problems/two-sum/
+     * 参考:  https://leetcode-cn.com/problems/two-sum/
      * 题解思路：哈希
      */
     public int[] twoSum(int[] nums, int target) {
@@ -28,7 +28,7 @@ public class Solution {
      * 15. 三数之和
      * @param nums
      * @return
-     * @see https://leetcode-cn.com/problems/3sum/
+     * 参考:  https://leetcode-cn.com/problems/3sum/
      * 题解思路：
      * 1. 暴力循环，三数之和必然存在O(n^3)的时间复杂度。显然不能通过。
      * 2. 在 {1. 两数之和} 的基础之上，通过增加一重循环来实现快速查找。当前版本还存在bug
@@ -60,7 +60,7 @@ public class Solution {
      * @param l1 链表1
      * @param l2 链表2
      * @return 新链表
-     * @see https://leetcode-cn.com/problems/add-two-numbers/
+     * 参考:  https://leetcode-cn.com/problems/add-two-numbers/
      * 题解思路：
      * 1. 模拟：加法器
      *
@@ -98,7 +98,7 @@ public class Solution {
      * 3. 无重复字符的最长子串
      * @param s 源字符串
      * @return 最长子串的长度
-     * @see https://leetcode-cn.com/problems/longest-substring-without-repeating-characters/
+     * 参考:  https://leetcode-cn.com/problems/longest-substring-without-repeating-characters/
      * 题解思路：
      * 首先要明确子串与子序列的区别
      * 1. 滑动窗口
@@ -130,7 +130,7 @@ public class Solution {
      * @param nums1 数组1
      * @param nums2 数组2
      * @return 中位数
-     * @see https://leetcode-cn.com/problems/median-of-two-sorted-arrays/
+     * 参考:  https://leetcode-cn.com/problems/median-of-two-sorted-arrays/
      * 题解思路：
      * 1. 模拟，先合并数组，然后在求中位数，需要O(m+n)的空间复杂度，时间复杂度也是O(m+n)
      * 2. 模拟，不需要合并数组，只需要找到中位数的索引即可，通过维护两个指针。
@@ -159,7 +159,7 @@ public class Solution {
      * 5. 最长回文子串
      * @param s
      * @return
-     * @see https://leetcode-cn.com/problems/longest-palindromic-substring/
+     * 参考:  https://leetcode-cn.com/problems/longest-palindromic-substring/
      * 题解思路：
      * 1. 动态规划 ：P(i,j)=P(i+1,j−1)∧(Si==Sj),P(i,i)=true;
      * 2. 中心扩展算法 ：回文串的特性决定
@@ -237,7 +237,7 @@ public class Solution {
      * 11. 盛最多的水
      * @param height
      * @return
-     * @see https://leetcode-cn.com/problems/container-with-most-water/
+     * 参考:  https://leetcode-cn.com/problems/container-with-most-water/
      * 题解思路：
      * 1. 暴力求解，双重循环
      * 2. 双指针，指针的移动策略是：选择当前指针指向的高度值最小的指针进行移动。
@@ -264,7 +264,7 @@ public class Solution {
      * 17. 电话号码的字母组合
      * @param digits
      * @return
-     * @see https://leetcode-cn.com/problems/letter-combinations-of-a-phone-number/
+     * 参考:  https://leetcode-cn.com/problems/letter-combinations-of-a-phone-number/
      * 题解思路：
      * 1. DFS+回溯
      */
@@ -315,7 +315,7 @@ public class Solution {
      * @param head
      * @param n
      * @return
-     * @see https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list/
+     * 参考:  https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list/
      * 题解思路：
      * 1. 滑动窗口
      */
@@ -341,7 +341,7 @@ public class Solution {
      * 20. 有效的括号
      * @param s
      * @return
-     * @see https://leetcode-cn.com/problems/valid-parentheses/
+     * 参考:  https://leetcode-cn.com/problems/valid-parentheses/
      * 题解思路：
      * 1. 栈的应用
      */
@@ -370,7 +370,7 @@ public class Solution {
      * @param l1
      * @param l2
      * @return
-     * @see https://leetcode-cn.com/problems/merge-two-sorted-lists/
+     * 参考:  https://leetcode-cn.com/problems/merge-two-sorted-lists/
      * 题解思路：
      * 1. 归并排序
      * 2. 递归
@@ -387,16 +387,153 @@ public class Solution {
         }
     }
 
+    /**
+     * 22. 括号生成
+     * @param n
+     * @return
+     * 参考:  https://leetcode-cn.com/problems/generate-parentheses/
+     * 题解思路：
+     * ()
+     * ()(),(())
+     * ()()(),(())(),()(()),((())),(()())
+     * ()()()(),()(())(),(())()(),()()(()),()(())(),()((())),((()))(),()(()()),(()())(),(()()()),((())()),(()(())),(((()))),((()()))
+     *
+     * 1. 动态规划，基本思路:在已有的前面，后面，外面分别再添加一个括号得到新的括号数量。只有第一种情况存在重复（前面和后面的结果是一样的，最终减去一即可）
+     * 递推公式：f(n)=3*f(n-1)-1
+     * 下面的题解思路思路上一定是对的，但是提交通过不了力扣，原因在于：元素的顺序，我认为这是不重要的，所以下面的方案应该也是可行的。
+     */
+    public List<String> generateParenthesis(int n) {
+        if(n<1)return new ArrayList<>();
+        List<String> strings= Collections.singletonList("()");
+        for(int i=1;i<n;i++){
+            List<String> item=new ArrayList<>();
+            for (String string : strings) {
+                item.add("(" + string + ")");
+                item.add(string + "()");
+                item.add("()" + string);
+            }
+            item.remove(item.size()-1);
+            strings=item;
+        }
+        return strings;
+    }
+
+    /**
+     * 23. 合并k个升序链表
+     * @param lists
+     * @return
+     * 参考:  https://leetcode-cn.com/problems/merge-k-sorted-lists/
+     *
+     * 题解思路：
+     * 1. 将所有元素放入数组中，排序重新构造链表
+     * 2. 将所有元素放入堆中，从堆中取出元素构造链表
+     * 3. 将所有元素放入堆中，从堆中去除元素（节点）并建立他们的链式关系
+     * 4. ......
+     */
+    public ListNode mergeKLists(ListNode[] lists) {
+        PriorityQueue<ListNode> priorityQueue=new PriorityQueue<>(Comparator.comparingInt(o -> o.val));
+        // 入队
+        for (ListNode list : lists) {
+            ListNode node = list;
+            while (node != null) {
+                priorityQueue.add(node);
+                node = node.next;
+            }
+        }
+        // 出队
+        ListNode head=new ListNode(0);
+        ListNode top=head;
+        while(!priorityQueue.isEmpty()){
+            head.next= priorityQueue.poll();
+            head=head.next;
+        }
+        head.next=null;
+        return top.next;
+    }
+
+    /**
+     * 31.下一个排列
+     * @param nums
+     * 参考:  https://leetcode-cn.com/problems/next-permutation/
+     * 题解思路：
+     * a. 1,2,3  -->  1,3,2
+     * b. 1,3,2  -->  2,1,3     3,4,2  -->  4,2,3
+     * c. 3,2,1 --->  1,2,3
+     * 我们需要将一个左边的「较小数」与一个右边的「较大数」交换，以能够让当前排列变大，从而得到下一个排列。
+     * 同时我们要让这个「较小数」尽量靠右，而「较大数」尽可能小。
+     * 当交换完成后，「较大数」右边的数需要按照升序重新排列。
+     * 这样可以在保证新排列大于原来排列的情况下，使变大的幅度尽可能小。
+     */
+    public void nextPermutation(int[] nums) {
+
+        int i = nums.length - 2;
+        while (i >= 0 && nums[i] >= nums[i + 1]) {
+            i--;
+        }
+        if (i >= 0) {
+            int j = nums.length - 1;
+            while (j >= 0 && nums[i] >= nums[j]) {
+                j--;
+            }
+            swap(nums, i, j);
+        }
+        reverse(nums, i + 1);
+    }
+
+    public void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+
+    public void reverse(int[] nums, int start) {
+        int left = start, right = nums.length - 1;
+        while (left < right) {
+            swap(nums, left, right);
+            left++;
+            right--;
+        }
+    }
+
+    /**
+     * 32. 最长有效括号
+     * @param s
+     * @return
+     * 参考：https://leetcode-cn.com/problems/longest-valid-parentheses/
+     * 题解思路：
+     * 1. https://leetcode-cn.com/problems/longest-valid-parentheses/solution/zui-chang-you-xiao-gua-hao-by-leetcode-solution/
+     */
+    public int longestValidParentheses(String s) {
+        int maxans = 0;
+        Deque<Integer> stack = new LinkedList<>();
+        stack.push(-1);
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '(') {
+                stack.push(i);
+            } else {
+                stack.pop();
+                if (stack.isEmpty()) {
+                    stack.push(i);
+                } else {
+                    maxans = Math.max(maxans, i - stack.peek());
+                }
+            }
+        }
+        return maxans;
+    }
 
     public static void main(String[] args) {
         final Solution solution = new Solution();
 
-        ListNode list=new ListNode(1,new ListNode(2,new ListNode(3,new ListNode(4))));
-        ListNode list2=new ListNode(5,new ListNode(6,new ListNode(7,new ListNode(8))));
-
-        final ListNode node = solution.mergeTwoLists(list, list2);
-        node.print();
-
+//        ListNode list=new ListNode(1,new ListNode(2,new ListNode(3,new ListNode(4))));
+//        ListNode list2=new ListNode(5,new ListNode(6,new ListNode(7,new ListNode(8))));
+//        ListNode list3=new ListNode(-1,new ListNode(9,new ListNode(11,new ListNode(12))));
+//        ListNode[] nodes=new ListNode[]{list,list2,list3};
+//        final ListNode kLists = solution.mergeKLists(nodes);
+//        kLists.print();
+        String s=")()())()()()";
+        final int i = solution.longestValidParentheses(s);
+        System.out.println(i);
 
     }
 }
