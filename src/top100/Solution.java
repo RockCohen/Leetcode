@@ -522,18 +522,57 @@ public class Solution {
         return maxans;
     }
 
+    /**
+     * 33. 搜索旋转排序数组
+     * @param nums
+     * @param target
+     * @return
+     * 参考：https://leetcode-cn.com/problems/search-in-rotated-sorted-array/
+     * 题解思路：
+     * 1. 暴力搜索
+     * 2. 首尾比较，如果大于首元素，正序查找，如果小于尾元素，逆序查找，结束标志：存在跳跃的地方，如果小于首元素，且大于尾元素，不存在该元素。
+     *
+     *
+     */
+    public int search(int[] nums, int target) {
+        int n = nums.length;
+        if (n == 0) {
+            return -1;
+        }
+        if (n == 1) {
+            return nums[0] == target ? 0 : -1;
+        }
+        int l = 0, r = n - 1;
+        while (l <= r) {
+            int mid = (l + r) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            }
+            if (nums[0] <= nums[mid]) {
+                if (nums[0] <= target && target < nums[mid]) {
+                    r = mid - 1;
+                } else {
+                    l = mid + 1;
+                }
+            } else {
+                if (nums[mid] < target && target <= nums[n - 1]) {
+                    l = mid + 1;
+                } else {
+                    r = mid - 1;
+                }
+            }
+        }
+        return -1;
+    }
+
     public static void main(String[] args) {
         final Solution solution = new Solution();
+        //ListNode list=new ListNode(1,new ListNode(2,new ListNode(3,new ListNode(4))));
 
-//        ListNode list=new ListNode(1,new ListNode(2,new ListNode(3,new ListNode(4))));
-//        ListNode list2=new ListNode(5,new ListNode(6,new ListNode(7,new ListNode(8))));
-//        ListNode list3=new ListNode(-1,new ListNode(9,new ListNode(11,new ListNode(12))));
-//        ListNode[] nodes=new ListNode[]{list,list2,list3};
-//        final ListNode kLists = solution.mergeKLists(nodes);
-//        kLists.print();
-        String s=")()())()()()";
-        final int i = solution.longestValidParentheses(s);
-        System.out.println(i);
+        int[] nums={};
+        int target=0;
+        final int search = solution.search(nums, target);
+        System.out.println(search);
 
     }
 }

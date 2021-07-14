@@ -72,7 +72,7 @@ public class DP {
      * @author Rock
      * @param nums
      * @return
-     * @see https://leetcode-cn.com/problems/longest-increasing-subsequence/
+     * 参考:  https://leetcode-cn.com/problems/longest-increasing-subsequence/
      */
     public int lengthOfLIS(int[] nums) {
         if (nums.length == 0) {
@@ -98,7 +98,7 @@ public class DP {
      * @author Rock
      * @param nums
      * @return
-     * @see https://leetcode-cn.com/problems/number-of-longest-increasing-subsequence/
+     * 参考:  https://leetcode-cn.com/problems/number-of-longest-increasing-subsequence/
      */
     public int findNumberOfLIS(int[] nums) {
         int N = nums.length;
@@ -134,7 +134,7 @@ public class DP {
      * 题目：译码
      * @param s
      * @return
-     * @see https://leetcode-cn.com/problems/decode-ways/
+     * 参考:  https://leetcode-cn.com/problems/decode-ways/
      * 题解思路：
      * 仔细观察子问题结构，显然这个题目可以动态规划来求解。下面给出递推公式。
      * f[i]=s[i]!=0?f[i-1]:0+(s[i-2]!0&&decodable([i-1][i]))?f[i-2]:0;(2<=i<=n)
@@ -160,7 +160,7 @@ public class DP {
      * 题目：最大整除数集
      * @param nums
      * @return
-     * @see https://leetcode-cn.com/problems/largest-divisible-subset/
+     * 参考:  https://leetcode-cn.com/problems/largest-divisible-subset/
      * 题解思路：
      * 动态规划,需要记录当前最大整除数集的最大元素与个数。
      */
@@ -209,7 +209,7 @@ public class DP {
      * @param nums
      * @param target
      * @return
-     * @see https://leetcode-cn.com/problems/combination-sum-iv/
+     * 参考:  https://leetcode-cn.com/problems/combination-sum-iv/
      *
      * 题解思路：
      * 给出例子：[1,2,3]----->4
@@ -247,7 +247,7 @@ public class DP {
     }
     /**
      * 题目：最长公共子序列
-     * @see ： https://leetcode-cn.com/problems/longest-common-subsequence/
+     * 参考:  ： https://leetcode-cn.com/problems/longest-common-subsequence/
      * 题解思路：
      * 动态规划
      */
@@ -258,7 +258,7 @@ public class DP {
      * 题目：不相交的线
      * @param : nums1
      * @param : nums2
-     * @see ：https://leetcode-cn.com/problems/uncrossed-lines/
+     * 参考:  ：https://leetcode-cn.com/problems/uncrossed-lines/
      * 题解思路：
      * [1,2,4] 
      * [1,4,2]

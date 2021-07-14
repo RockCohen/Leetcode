@@ -25,7 +25,7 @@ public class DivideConquer {
      * @author Rock
      * @param nums
      * @return
-     * @see https://leetcode-cn.com/problems/maximum-subarray/
+     * 参考:  https://leetcode-cn.com/problems/maximum-subarray/
      */
     public int maxSubArray(int[] nums) {
        if(nums.length==0)return 0;
@@ -76,7 +76,7 @@ public class DivideConquer {
      * @author Rock
      * @param nums
      * @return
-     * @see https://leetcode-cn.com/problems/majority-element/
+     * 参考:  https://leetcode-cn.com/problems/majority-element/
      */
     public int majorityElement(int[] nums) {
         int count = 0;
@@ -125,7 +125,7 @@ public class DivideConquer {
      * @author Rock
      * @param nums
      * @return
-     * @see https://leetcode-cn.com/problems/majority-element/
+     * 参考:  https://leetcode-cn.com/problems/majority-element/
      */
     public int majorityElementDivide(int[] nums) {
         return majorityElementRec(nums, 0, nums.length - 1);
@@ -139,7 +139,7 @@ public class DivideConquer {
      * @param nums
      * @param k
      * @return
-     * @see https://leetcode-cn.com/problems/kth-largest-element-in-an-array/
+     * 参考:  https://leetcode-cn.com/problems/kth-largest-element-in-an-array/
      */
     public int findKthLargest(int[] nums, int k) {
         return 0;

@@ -5,7 +5,7 @@ public class Bit {
      * 题目：寻找只出现一次的数字
      * @param nums
      * @return
-     * @see https://leetcode-cn.com/problems/single-number/
+     * 参考:  https://leetcode-cn.com/problems/single-number/
      * 题解思路：
      * 1.位运算，直接利用异或运算即可得到最终的结果。
      * 异或运算的规则：
@@ -33,7 +33,7 @@ public class Bit {
      * @param arr
      * @param queries
      * @return
-     * @see https://leetcode-cn.com/problems/xor-queries-of-a-subarray/
+     * 参考:  https://leetcode-cn.com/problems/xor-queries-of-a-subarray/
      *
      * 题解：
      * 1. 暴力模拟（显然是一种可能超时的算法）

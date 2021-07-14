@@ -6,7 +6,7 @@ public class Search {
      * @param matrix
      * @param target
      * @return
-     * @see https://leetcode-cn.com/problems/search-a-2d-matrix-ii/、
+     * 参考:  https://leetcode-cn.com/problems/search-a-2d-matrix-ii/、
      *
      * 题解思路：从左下角或者右上角开始寻找，类似于二分查找
      */

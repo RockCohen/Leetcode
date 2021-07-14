@@ -7,7 +7,7 @@ public class ArraysOperation {
      * @param m
      * @param nums2
      * @param n
-     * @see https://leetcode-cn.com/problems/merge-sorted-array/
+     * 参考:  https://leetcode-cn.com/problems/merge-sorted-array/
      * 题解思路：
      * 1. 从尾部开始扫描，对比nums1与nums2中最大的元素放入nums1的末尾，一次填满即可。
      *

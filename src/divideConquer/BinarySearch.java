@@ -8,7 +8,7 @@ public class BinarySearch {
      * @param nums
      * @param target
      * @return
-     * @see https://leetcode-cn.com/problems/search-insert-position/
+     * 参考:  https://leetcode-cn.com/problems/search-insert-position/
      *
      * 题解思路：二分查找，没啥可说的，最经典的题目了。
      * 特别注意上下界的变化。
@@ -30,7 +30,7 @@ public class BinarySearch {
      * 题目：平方根
      * @param x
      * @return
-     * @see https://leetcode-cn.com/problems/sqrtx/
+     * 参考:  https://leetcode-cn.com/problems/sqrtx/
      *
      * 题解：直接二分
      */
@@ -87,7 +87,7 @@ return true;}
      * @param weights
      * @param D
      * @return
-     * @see https://leetcode-cn.com/problems/capacity-to-ship-packages-within-d-days/
+     * 参考:  https://leetcode-cn.com/problems/capacity-to-ship-packages-within-d-days/
      * 题解思路：二分法
      * 分析问题得知，一定存在一个最小运货载重，使得货物在D天内被运走，于是我们采用如下的办法：
      * 我们将「最少需要运送的天数」与 DD 进行比较，就可以解决这个判定问题。
