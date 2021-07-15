@@ -531,6 +531,7 @@ public class Solution {
      * 题解思路：
      * 1. 暴力搜索
      * 2. 首尾比较，如果大于首元素，正序查找，如果小于尾元素，逆序查找，结束标志：存在跳跃的地方，如果小于首元素，且大于尾元素，不存在该元素。
+     * 3. 二分查找
      *
      *
      */
@@ -565,14 +566,135 @@ public class Solution {
         return -1;
     }
 
+    /**
+     * 34. 在排序数组中查找元素的第一个和最后一个位置
+     * @param nums
+     * @param target
+     * @return
+     * 参考：https://leetcode-cn.com/problems/find-first-and-last-position-of-element-in-sorted-array/
+     * 题解思路：
+     * 1. 暴力检索，时间复杂度O(n)
+     * 2. 二分法,通过设置标志位来确定在那一段进行配置
+     */
+    public int[] searchRange(int[] nums, int target) {
+        int leftIdx = binarySearch(nums, target, true);
+        int rightIdx = binarySearch(nums, target, false) - 1;
+        if (leftIdx <= rightIdx && rightIdx < nums.length && nums[leftIdx] == target && nums[rightIdx] == target) {
+            return new int[]{leftIdx, rightIdx};
+        }
+        return new int[]{-1, -1};
+    }
+    private int binarySearch(int[] nums, int target, boolean lower) {
+        int left = 0, right = nums.length - 1, ans = nums.length;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            // 标志位的设置将搜索路径一分为二
+            if (nums[mid] > target || (lower && nums[mid] >= target)) {
+                right = mid - 1;
+                ans = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return ans;
+    }
+
+    /**
+     * 39. 组合总和
+     * @param candidates
+     * @param target
+     * @return
+     * 参考：https://leetcode-cn.com/problems/combination-sum/
+     * 题解思路：
+     * 回溯法
+     */
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+
+        int len=candidates.length;
+        List<List<Integer>>res=new ArrayList<>();
+        if(len==0)return res;
+        Arrays.sort(candidates);
+        Deque<Integer> path=new ArrayDeque<>();
+        dfs(candidates,0,len,target,path,res);
+        return res;
+    }
+
+    private void dfs(int[] candidates,int begin,int len,int target,Deque<Integer> path,List<List<Integer>> res){
+        if(target==0){
+            res.add(new ArrayList<>(path));
+        }
+        for(int i=begin;i<len;i++){
+            if(target-candidates[i]<0)break;
+            path.add(candidates[i]);
+            dfs(candidates,i,len,target-candidates[i],path,res);
+            path.removeLast();
+        }
+    }
+
+    /**
+     * 46. 全排列
+     * @param nums
+     * @return
+     * 参考：https://leetcode-cn.com/problems/permutations/
+     * 题解思路：
+     * 1. 回溯法
+     */
+    public List<List<Integer>> permute(int[] nums) {
+        List<Integer> path=new ArrayList<>();
+        List<List<Integer>> res=new ArrayList<>();
+        boolean[] used=new boolean[nums.length];
+        for(boolean x:used){
+            x=false;
+        }
+        permuteHelper(nums,nums.length,0,path,used,res);
+        return res;
+    }
+    private void permuteHelper(int[] nums, int len, int depth,
+                     List<Integer> path, boolean[] used,
+                     List<List<Integer>> res) {
+        if (depth == len) {
+            res.add(new ArrayList<>(path));
+            return;
+        }
+        // 在非叶子结点处，产生不同的分支，这一操作的语义是：在还未选择的数中依次选择一个元素作为下一个位置的元素，这显然得通过一个循环实现。
+        for (int i = 0; i < len; i++) {
+            if (!used[i]) {
+                path.add(nums[i]);
+                used[i] = true;
+                permuteHelper(nums, len, depth + 1, path, used, res);
+                // 注意：下面这两行代码发生 「回溯」，回溯发生在从 深层结点 回到 浅层结点 的过程，代码在形式上和递归之前是对称的
+                used[i] = false;
+                path.remove(path.size() - 1);
+            }
+        }
+    }
+
+    /**
+     * 53. 最大子序和
+     * @param nums
+     * @return
+     * 参考：https://leetcode-cn.com/problems/maximum-subarray/
+     * 题解思路：
+     * 1. 分支法
+     * 2. 动态规划 f(i)=max{ f(i-1)+nums[i],nums[i] }
+     */
+    public int maxSubArray(int[] nums) {
+        int pre = 0, maxAns = nums[0];
+        for (int x : nums) {
+            pre = Math.max(pre + x, x);
+            maxAns = Math.max(maxAns, pre);
+        }
+        return maxAns;
+    }
+
     public static void main(String[] args) {
         final Solution solution = new Solution();
+        int[] nums={1,2,3};
+        final List<List<Integer>> lists = solution.permute(nums);
+        for (List<Integer> list : lists) {
+            list.forEach(System.out::print);
+            System.out.println();
+        }
         //ListNode list=new ListNode(1,new ListNode(2,new ListNode(3,new ListNode(4))));
-
-        int[] nums={};
-        int target=0;
-        final int search = solution.search(nums, target);
-        System.out.println(search);
-
     }
 }
