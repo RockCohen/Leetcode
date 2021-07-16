@@ -668,25 +668,6 @@ public class Solution {
             }
         }
     }
-
-    /**
-     * 53. 最大子序和
-     * @param nums
-     * @return
-     * 参考：https://leetcode-cn.com/problems/maximum-subarray/
-     * 题解思路：
-     * 1. 分支法
-     * 2. 动态规划 f(i)=max{ f(i-1)+nums[i],nums[i] }
-     */
-    public int maxSubArray(int[] nums) {
-        int pre = 0, maxAns = nums[0];
-        for (int x : nums) {
-            pre = Math.max(pre + x, x);
-            maxAns = Math.max(maxAns, pre);
-        }
-        return maxAns;
-    }
-
     /**
      * 42. 接雨水
      * @param height
@@ -730,6 +711,26 @@ public class Solution {
         }
         return res;
     }
+
+    /**
+     * 53. 最大子序和
+     * @param nums
+     * @return
+     * 参考：https://leetcode-cn.com/problems/maximum-subarray/
+     * 题解思路：
+     * 1. 分支法
+     * 2. 动态规划 f(i)=max{ f(i-1)+nums[i],nums[i] }
+     */
+    public int maxSubArray(int[] nums) {
+        int pre = 0, maxAns = nums[0];
+        for (int x : nums) {
+            pre = Math.max(pre + x, x);
+            maxAns = Math.max(maxAns, pre);
+        }
+        return maxAns;
+    }
+
+
 
     /**
      * 55. 跳跃游戏
