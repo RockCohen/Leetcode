@@ -687,14 +687,175 @@ public class Solution {
         return maxAns;
     }
 
+    /**
+     * 42. 接雨水
+     * @param height
+     * @return
+     * 参考：https://leetcode-cn.com/problems/trapping-rain-water/
+     * 题解思路：
+     * 1. 曲线模拟，显然只有波峰与波峰之间才能装雨水。然后再在连续的波峰之间计算凹下去的面积。
+     */
+    public int trap(int[] height) {
+        int res=0;
+        Queue<Map.Entry<Integer,Integer>> queue=new LinkedList<>();
+        for(int i=0;i< height.length;i++){
+            if(i==0){//左边界
+                if(height[i]>height[i+1]){
+                    queue.add(new AbstractMap.SimpleEntry<>(i,height[i]));
+                }
+            }
+            else if(i==height.length-1){//右边界
+                if(height[i]>height[i-1]){
+                    queue.add(new AbstractMap.SimpleEntry<>(i,height[i]));
+                }
+            }
+            else{//一般情况
+                if(height[i]>height[i-1]&&height[i]>height[i+1]){
+                    queue.add(new AbstractMap.SimpleEntry<>(i,height[i]));
+                }
+            }
+        }
+        if(queue.size()==0)return res;
+        Map.Entry<Integer,Integer> left=queue.poll();
+        while(!queue.isEmpty()){
+            Map.Entry<Integer,Integer> right=queue.poll();
+            int high=Math.min(left.getValue(),right.getValue());
+            int sum=0;
+            for(int i=left.getKey();i<right.getKey();i++){
+                int mid= Math.max(high-height[i], 0);
+                sum+= mid;
+            }
+            res+=sum;
+            left=right;
+        }
+        return res;
+    }
+
+    /**
+     * 55. 跳跃游戏
+     * @param nums
+     * @return
+     * 参考：https://leetcode-cn.com/problems/jump-game/
+     * 题解思路：
+     * 1. 动态规划
+     */
+    public boolean canJump(int[] nums) {
+
+        boolean[] dp=new boolean[nums.length];
+        for(boolean x:dp){
+            x=false;
+        }
+        dp[0]=true;
+        for(int i=0;i<nums.length;i++){
+            for(int j=0;j<i;j++){
+                if(dp[j] &&nums[j]>=(i-j)){
+                    dp[i]=true;
+                    break;
+                }
+            }
+        }
+        return dp[nums.length-1];
+    }
+    public boolean canJump_II(int[] nums) {
+        int n = nums.length;
+        int rightmost = 0;
+        for (int i = 0; i < n; ++i) {
+            if (i <= rightmost) {
+                rightmost = Math.max(rightmost, i + nums[i]);
+                if (rightmost >= n - 1) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 62. 不同路径
+     * @param m
+     * @param n
+     * @return
+     * 参考：https://leetcode-cn.com/problems/unique-paths/
+     * 题解思路：
+     * 1. 动态规划：f[i][j]=f[i-1][j]+f[i][j-1]
+     * 2. 组合数学  (m+n-2)! / [(m-1)! *(n-1)!]
+     */
+    public int uniquePaths(int m, int n) {
+        long ans = 1;
+        for (int x = n, y = 1; y < m; ++x, ++y) {
+            ans = ans * x / y;
+        }
+        return (int) ans;
+    }
+    public int uniquePaths_Dynamic(int m, int n) {
+        int[][] f = new int[m][n];
+        for (int i = 0; i < m; ++i) {
+            f[i][0] = 1;
+        }
+        for (int j = 0; j < n; ++j) {
+            f[0][j] = 1;
+        }
+        for (int i = 1; i < m; ++i) {
+            for (int j = 1; j < n; ++j) {
+                f[i][j] = f[i - 1][j] + f[i][j - 1];
+            }
+        }
+        return f[m - 1][n - 1];
+    }
+
+    /**
+     * 64.最小路径和
+     * @param grid
+     * @return
+     * 参考：https://leetcode-cn.com/problems/minimum-path-sum/
+     * 题解思路：
+     * 1.动态规划，与上题一样
+     *  f[i][j]=min(f[i-1][j]+nums[i][j],f[i][j-1]+nums[i][j])
+     *
+     */
+    public int minPathSum(int[][] grid) {
+        int iLen=grid.length;
+        int jLen=grid[0].length;
+        int[][] dp=new int[iLen][jLen];
+        dp[0][0]=grid[0][0];
+        for(int i=1;i<jLen;i++){
+            dp[0][i]=dp[0][i-1]+grid[0][i];
+        }
+        for(int i=1;i<iLen;i++){
+            dp[i][0]=dp[i-1][0]+grid[i][0];
+        }
+        for(int i=1;i<iLen;i++){
+            for(int j=1;j<jLen;j++){
+                dp[i][j]=Math.min(dp[i-1][j],dp[i][j-1])+grid[i][j];
+            }
+        }
+        return dp[iLen-1][jLen-1];
+    }
+
+    /**
+     * 70. 爬楼梯
+     * @param n
+     * @return
+     * 参考：https://leetcode-cn.com/problems/climbing-stairs/
+     * 题解思路：
+     * 1. 迭代
+     * 2. 斐波拉契数列
+     */
+    public int climbStairs(int n) {
+        int f0=1;
+        int f1=1;
+        int res=0;
+        for(int i=1;i<n;i++){
+            res=f0+f1;
+            f0=f1;
+            f1=res;
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
         final Solution solution = new Solution();
-        int[] nums={1,2,3};
-        final List<List<Integer>> lists = solution.permute(nums);
-        for (List<Integer> list : lists) {
-            list.forEach(System.out::print);
-            System.out.println();
-        }
+        System.out.println(solution.climbStairs(3));
         //ListNode list=new ListNode(1,new ListNode(2,new ListNode(3,new ListNode(4))));
     }
 }
