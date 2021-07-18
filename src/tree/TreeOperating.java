@@ -36,7 +36,7 @@ public class TreeOperating {
      *
      */
     public List<Integer> stackMiddleOrderTraversal(TreeNode root) {//中序遍历
-        Stack<TreeNode> treeNodeStack = new Stack<>();//存储节点的栈
+        Deque<TreeNode> treeNodeStack = new LinkedList<>();//存储节点的栈
         TreeNode node = root;//获取根节点
         List<Integer> res=new ArrayList<>();//存储遍历节点（遍历的结果）
         //只有当前节点与栈不为空才结束操作。

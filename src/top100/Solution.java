@@ -1,6 +1,8 @@
 package top100;
 
 import list.ListNode;
+import sun.reflect.generics.tree.Tree;
+import tree.TreeNode;
 
 import java.util.*;
 
@@ -730,6 +732,25 @@ public class Solution {
         return maxAns;
     }
 
+    /**
+     * 121. 买卖股票的最佳时机
+     * @param prices
+     * @return
+     * 参考：https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock/
+     * 题解思路：
+     * 1. 动态规划
+     *    首先处理数组，获得每天的股票基于前一天的差额，然后利用最大子序和即可求解。
+     */
+    public int maxProfit(int[] prices) {
+        int pre = 0, maxAns = 0;
+        for (int i=1;i<prices.length;i++) {
+            int x=prices[i]-prices[i-1];
+            pre = Math.max(pre + x, x);
+            maxAns = Math.max(maxAns, pre);
+        }
+        return maxAns;
+    }
+
 
 
     /**
@@ -854,9 +875,242 @@ public class Solution {
         return res;
     }
 
+    /**
+     * 78.子集
+     * @param nums
+     * @return
+     * 参考：https://leetcode-cn.com/problems/subsets/
+     * 题解思路：
+     * 1. 数学推论，已知存在n个相异元素的集合可以得到2^n个子集。刚好对应0--->2^n-1.
+     * 可以将二进制数与选择的元素对应，二进制该位为1表示选择该元素，否则不选择该元素。
+     */
+    public List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> ans = new ArrayList<>();
+        int n=nums.length;
+        int mask=1<<n;
+        for(int i=0;i<mask;i++){
+            int number=i;
+            List<Integer> list=new ArrayList<>();
+            for (int num : nums) {
+                if ((number & 1) == 1) {
+                    list.add(num);
+                }
+                number>>=1;
+            }
+            ans.add(list);
+        }
+        return ans;
+    }
+
+    /**
+     * 79. 单词搜索
+     * @param board
+     * @param word
+     * @return
+     * 参考：https://leetcode-cn.com/problems/word-search/
+     * 题解思路：
+     * 1. 回溯
+     */
+    public boolean exist(char[][] board, String word) {
+        int m = board.length;
+        int n = board[0].length;
+        boolean exist = false;
+        boolean[][] visited = new boolean[m][n];
+        for (int i = 0; i < m; i++){
+            for (int j = 0; j < n; j++){
+                if (board[i][j] == word.charAt(0)){
+                    exist = dfs(board, visited, i, j, word, 0);
+                    if (exist){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean dfs(char[][] board, boolean[][] visited, int i, int j, String word, int index){
+
+        int m = board.length;
+        int n = board[0].length;
+        if (i >= 0 && i < m && j >= 0 && j < n && !visited[i][j] && board[i][j] == word.charAt(index)){
+            visited[i][j] = true;
+            if (index == word.length() - 1){
+                return true;
+            }
+            boolean b1 = dfs(board, visited, i + 1, j, word, index + 1);
+            boolean b2 = dfs(board, visited, i - 1, j, word, index + 1);
+            boolean b3 = dfs(board, visited, i , j + 1, word, index + 1);
+            boolean b4 = dfs(board, visited, i, j - 1, word, index + 1);
+            visited[i][j] = false;
+            return b1 || b2 || b3 || b4;
+        }
+        return false;
+    }
+    /**
+     * 模拟回溯的过程，首先检查当前位置的字符是否满足要求，满足要求继续向下检索，
+     * 此时则存在向那个方向检索的问题，于是通过数组向量的方式给出方向。
+     * 然后需要在不同的方向的下一个字符做同样的操作，需要注意的是，一次完整的检索链应该保证
+     * 已经被检索过的元素不能被再一次检索，通过设置访问数组实现检索元素的状态记录。
+     * 检索匹配成功的标志是最后一个字符也匹配成功，此时直接返回true，如果当前的字符不匹配，那么直接放回false。
+     */
+    private boolean check(char[][] board, boolean[][] visited, int i, int j, String s, int k){
+        if(board[i][j]!=s.charAt(k))return false;
+        else if(k==s.length()-1)return true;
+        visited[i][j]=true;
+        int[][] directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};//定义查找方向
+        boolean res=false;
+        for(int[] direction:directions){
+            int iNew = direction[0]+i,jNew=direction[1]+j;//获取当前方向
+            if(iNew>0&&iNew<board.length&&jNew>0&&jNew<board[0].length){
+                if(!visited[iNew][jNew]){
+                    boolean flag=check(board,visited,iNew,jNew,s,k+1);
+                    if(flag){
+                        res=true;
+                        break;
+                    }
+                }
+            }
+        }
+        visited[i][j]=false;
+        return res;
+    }
+
+    /**
+     * 94. 二叉树的中序遍历
+     * @param root
+     * @return
+     * 参考：https://leetcode-cn.com/problems/binary-tree-inorder-traversal/
+     * 题解思路：
+     * 1. 递归
+     * 2. 迭代法（栈）
+     */
+    public List<Integer> inorderTraversal(TreeNode root) {
+        Deque<TreeNode> treeNodeStack = new LinkedList<>();//存储节点的栈
+        TreeNode node = root;//获取根节点
+        List<Integer> res=new ArrayList<>();//存储遍历节点（遍历的结果）
+        //只有当前节点与栈不为空才结束操作。
+        while (node != null || !treeNodeStack.isEmpty()) {
+            //左子树疯狂入栈。（递归的本质）
+            while (node != null) {
+                treeNodeStack.push(node);
+                node = node.left;
+            }
+            //当左子树为空，并且这个时候应该栈不为空。
+            // 获取栈顶元素，访问之，然后将其右子树入栈
+            // 重复上述的操作。
+            node = treeNodeStack.pop();
+            //遍历节点
+            res.add(node.val);
+            node = node.right;
+        }
+        return res;
+    }
+
+    /**
+     * 96. 不同的二叉搜索树
+     * @param n
+     * @return
+     * 参考：https://leetcode-cn.com/problems/unique-binary-search-trees/
+     * 题解思路：
+     * 1. 动态规划，以i为树根的树是唯一的。其构成是G(1,i)与G(i+1,n)的笛卡尔积。其中
+     *          G(0)=1;
+     *          G(1)=1;
+     * 2. 数学组合
+     */
+    public int numTrees(int n) {
+        int[] G = new int[n + 1];
+        G[0] = 1;
+        G[1] = 1;
+        for (int i = 2; i <= n; ++i) {
+            for (int j = 1; j <= i; ++j) {
+                G[i] += G[j - 1] * G[i - j];
+            }
+        }
+        return G[n];
+    }
+
+    /**
+     * 128. 最长连续序列
+     * @param nums
+     * @return
+     * 参考：https://leetcode-cn.com/problems/longest-consecutive-sequence/
+     * 题解思路：
+     * 1. 排序
+     * 2. 哈希（哈希表的选择比较难搞）
+     * 3. 堆
+     */
+    public int longestConsecutive(int[] nums) {
+        return 0;//等待实现
+    }
+
+    /**
+     * 448. 找到所有数组中消失的数字
+     * @param nums
+     * @return
+     * 参考：https://leetcode-cn.com/problems/find-all-numbers-disappeared-in-an-array/
+     * 题解思路：
+     * 1. 哈希 统计每个桶的元素的数量，显然
+     * 2. 排序 排序之后，将相邻元素之间的元素直接添加到结果链表中
+     *
+     */
+    public List<Integer> findDisappearedNumbers(int[] nums) {
+        List<Integer> res=new ArrayList<>();
+        Arrays.sort(nums);
+        for(int i=1;i<=nums.length;i++){
+            if(i!=nums[i-1]){
+                res.add(i);
+            }
+        }
+        return res;
+
+    }
+    /**
+     * 461. 汉明距离
+     * @param x x
+     * @param y y
+     * @return
+     * 参考：https://leetcode-cn.com/problems/hamming-distance/
+     * 题解思路：
+     * 1. bit相异的计算方法最好不过：亦或。计算x^y的bit位为1的个数即可。
+     */
+    public int hammingDistance(int x, int y) {
+        int s = x ^ y, ret = 0;
+        while (s != 0) {
+            ret += s & 1;
+            s >>= 1;
+        }
+        return ret;
+    }
+    /**
+     * 543. 二叉树的直径
+     * @param root
+     * @return
+     * 参考：https://leetcode-cn.com/problems/diameter-of-binary-tree/
+     * 题解思路：
+     * 1. 计算每个节点作为根节点左右子树的深度之和的最大值便是二叉树的直径
+     *    具体的做法：
+     *             维护一个全局变量，记录当前遍历的节点中的直径的最大值。
+     *             而且这个全局变量应该是在计算节点左右子树深度的时候维护的。
+     */
+    public int diameterOfBinaryTree(TreeNode root) {
+        helper_diameterOfBinaryTree(root);
+        return ans;
+    }
+    private int ans=0;
+    public int helper_diameterOfBinaryTree(TreeNode root){
+        if(root==null)return 0;
+        int l=helper_diameterOfBinaryTree(root.left);
+        int r=helper_diameterOfBinaryTree(root.right);
+        ans=Math.max(ans,l+r);
+        return Math.max(l,r)+1;
+    }
     public static void main(String[] args) {
+        // TreeNode root=new TreeNode(6,new TreeNode(3,new TreeNode(1),new TreeNode(2)),new TreeNode(9,new TreeNode(7),new TreeNode(8)));
         final Solution solution = new Solution();
-        System.out.println(solution.climbStairs(3));
         //ListNode list=new ListNode(1,new ListNode(2,new ListNode(3,new ListNode(4))));
+        int[] p={7,1,5,3,6,4};
+        final int profit = solution.maxProfit(p);
+        System.out.println(profit);
     }
 }
