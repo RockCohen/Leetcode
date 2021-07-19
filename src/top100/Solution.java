@@ -28,7 +28,6 @@ public class Solution {
 
     /**
      * 15. 三数之和
-     * @param nums
      * @return
      * 参考:  https://leetcode-cn.com/problems/3sum/
      * 题解思路：
@@ -107,7 +106,7 @@ public class Solution {
      */
     public int lengthOfLongestSubstring(String s) {
         // 哈希集合，记录每个字符是否出现过
-        Set<Character> occ = new HashSet<Character>();
+        Set<Character> occ = new HashSet<>();
         int n = s.length();
         // 右指针，初始值为 -1，相当于我们在字符串的左边界的左侧，还没有开始移动
         int rk = -1, ans = 0;
@@ -129,8 +128,6 @@ public class Solution {
 
     /**
      * 4. 寻找两个正序列数组的中位数
-     * @param nums1 数组1
-     * @param nums2 数组2
      * @return 中位数
      * 参考:  https://leetcode-cn.com/problems/median-of-two-sorted-arrays/
      * 题解思路：
@@ -159,7 +156,6 @@ public class Solution {
 
     /**
      * 5. 最长回文子串
-     * @param s
      * @return
      * 参考:  https://leetcode-cn.com/problems/longest-palindromic-substring/
      * 题解思路：
@@ -1041,7 +1037,312 @@ public class Solution {
      * 3. 堆
      */
     public int longestConsecutive(int[] nums) {
-        return 0;//等待实现
+        Set<Integer> num_set = new HashSet<>();
+        for (int num : nums) {
+            num_set.add(num);
+        }
+
+        int longestStreak = 0;
+
+        for (int num : num_set) {
+            if (!num_set.contains(num - 1)) {
+                int currentNum = num;
+                int currentStreak = 1;
+
+                while (num_set.contains(currentNum + 1)) {
+                    currentNum += 1;
+                    currentStreak += 1;
+                }
+
+                longestStreak = Math.max(longestStreak, currentStreak);
+            }
+        }
+
+        return longestStreak;
+    }
+
+    /**
+     * 136. 只出现一次的数字
+     * @param nums nums
+     * @return
+     * 参考：https://leetcode-cn.com/problems/single-number/
+     * 题解思路：
+     * 1. 亦或（亦或yyds）
+     */
+    public int singleNumber(int[] nums) {
+        int ans=0;
+        for (int num : nums) {
+            ans ^= num;
+        }
+        return ans;
+    }
+
+    /**
+     * 139. 单词拆分
+     * @return
+     * 参考：https://leetcode-cn.com/problems/word-break/
+     * 题解思路：
+     * 遍历wordDict然后匹配每个子串看看他们之间是否存在交区间
+     */
+    public boolean wordBreak(String s, List<String> wordDict) {
+        return false;
+    }
+
+    /**
+     * 141. 环形链表
+     * @param head
+     * @return
+     * 参考：https://leetcode-cn.com/problems/linked-list-cycle/
+     * 题解思路：
+     * 1. 快慢指针
+     * 2. 哈希表
+     */
+    public boolean hasCycle(ListNode head) {
+        if (head == null || head.next == null) {
+            return false;
+        }
+        ListNode slow = head;
+        ListNode fast = head.next;
+        while (slow != fast) {
+            if (fast == null || fast.next == null) {
+                return false;
+            }
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return true;
+    }
+
+    /**
+     * 142. 环形链表 II
+     * 参考：https://leetcode-cn.com/problems/linked-list-cycle-ii/
+     * 题解思路：
+     * 1. 哈希表
+     * 2. 快慢指针
+     */
+    public ListNode detectCycle(ListNode head) {
+        ListNode pos = head;
+        Set<ListNode> visited = new HashSet<>();
+        while (pos != null) {
+            if (visited.contains(pos)) {
+                return pos;
+            } else {
+                visited.add(pos);
+            }
+            pos = pos.next;
+        }
+        return null;
+    }
+
+    /**
+     *
+     */
+    class LRUCache extends LinkedHashMap<Integer, Integer>{
+        private final int capacity;
+
+        public LRUCache(int capacity) {
+            super(capacity, 0.75F, true);
+            this.capacity = capacity;
+        }
+
+        public int get(int key) {
+            return super.getOrDefault(key, -1);
+        }
+
+        public void put(int key, int value) {
+            super.put(key, value);
+        }
+
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<Integer, Integer> eldest) {
+            return size() > capacity;
+        }
+    }
+
+    /**
+     *
+     */
+    static class LRUCacheSelfDefine {
+        static class DLinkedNode {
+            int key;
+            int value;
+            DLinkedNode prev;
+            DLinkedNode next;
+            public DLinkedNode() {}
+            public DLinkedNode(int _key, int _value) {key = _key; value = _value;}
+        }
+
+        private final Map<Integer, DLinkedNode> cache = new HashMap<>();
+        private int size;
+        private final int capacity;
+        private final DLinkedNode head;
+        private final DLinkedNode tail;
+
+        public LRUCacheSelfDefine(int capacity) {
+            this.size = 0;
+            this.capacity = capacity;
+            // 使用伪头部和伪尾部节点
+            head = new DLinkedNode();
+            tail = new DLinkedNode();
+            head.next = tail;
+            tail.prev = head;
+        }
+
+        public int get(int key) {
+            DLinkedNode node = cache.get(key);
+            if (node == null) {
+                return -1;
+            }
+            // 如果 key 存在，先通过哈希表定位，再移到头部
+            moveToHead(node);
+            return node.value;
+        }
+
+        public void put(int key, int value) {
+            DLinkedNode node = cache.get(key);
+            if (node == null) {
+                // 如果 key 不存在，创建一个新的节点
+                DLinkedNode newNode = new DLinkedNode(key, value);
+                // 添加进哈希表
+                cache.put(key, newNode);
+                // 添加至双向链表的头部
+                addToHead(newNode);
+                ++size;
+                if (size > capacity) {
+                    // 如果超出容量，删除双向链表的尾部节点
+                    DLinkedNode tail = removeTail();
+                    // 删除哈希表中对应的项
+                    cache.remove(tail.key);
+                    --size;
+                }
+            }
+            else {
+                // 如果 key 存在，先通过哈希表定位，再修改 value，并移到头部
+                node.value = value;
+                moveToHead(node);
+            }
+        }
+
+        private void addToHead(DLinkedNode node) {
+            node.prev = head;
+            node.next = head.next;
+            head.next.prev = node;
+            head.next = node;
+        }
+
+        private void removeNode(DLinkedNode node) {
+            node.prev.next = node.next;
+            node.next.prev = node.prev;
+        }
+
+        private void moveToHead(DLinkedNode node) {
+            removeNode(node);
+            addToHead(node);
+        }
+
+        private DLinkedNode removeTail() {
+            DLinkedNode res = tail.prev;
+            removeNode(res);
+            return res;
+        }
+    }
+
+    /**
+     *148. 排序链表
+     * 参考：https://leetcode-cn.com/problems/sort-list/
+     * 题解思路：
+     * 分治归并排序
+     * 首先利用快慢指针找到链表的中点，然后调用归并排序合并前后
+     */
+    public ListNode sortList(ListNode head) {
+        return sortList(head, null);
+    }
+    public ListNode sortList(ListNode head, ListNode tail) {
+        if (head == null) {
+            return null;
+        }
+        if (head.next == tail) {
+            head.next = null;
+            return head;
+        }
+        //找到中点
+        ListNode slow = head, fast = head;
+        while (fast != tail) {
+            slow = slow.next;
+            fast = fast.next;
+            if (fast != tail) {
+                fast = fast.next;
+            }
+        }
+        //分治
+        ListNode mid = slow;
+        ListNode list1 = sortList(head, mid);
+        ListNode list2 = sortList(mid, tail);
+        return merge(list1, list2);
+    }
+    // 可以采用递归的写法简化
+    public ListNode merge(ListNode head1, ListNode head2) {
+        ListNode dummyHead = new ListNode(0);
+        ListNode temp = dummyHead, temp1 = head1, temp2 = head2;
+        while (temp1 != null && temp2 != null) {
+            if (temp1.val <= temp2.val) {
+                temp.next = temp1;
+                temp1 = temp1.next;
+            } else {
+                temp.next = temp2;
+                temp2 = temp2.next;
+            }
+            temp = temp.next;
+        }
+        if (temp1 != null) {
+            temp.next = temp1;
+        } else if (temp2 != null) {
+            temp.next = temp2;
+        }
+        return dummyHead.next;
+    }
+
+    /**
+     * 152. 乘积最大子数组
+     * 参考：https://leetcode-cn.com/problems/maximum-product-subarray/
+     * 题解思路：
+     * 1. 动态规划，关键在于：符号的存在影响了判断最大值的方式。
+     *            有可能当前的负数乘以一个负数反而成了最大值。于是有了下面的接替方案
+     */
+    public int maxProduct(int[] nums) {
+        int maxF = nums[0], minF = nums[0], ans = nums[0];
+        int length = nums.length;
+        for (int i = 1; i < length; ++i) {
+            int mx = maxF, mn = minF;
+            maxF = Math.max(mx * nums[i], Math.max(nums[i], mn * nums[i]));
+            minF = Math.min(mn * nums[i], Math.min(nums[i], mx * nums[i]));
+            ans = Math.max(maxF, ans);
+        }
+        return ans;
+    }
+
+    /**
+     * 160. 相交链表
+     * @param headA
+     * @param headB
+     * @return
+     * 参考：https://leetcode-cn.com/problems/intersection-of-two-linked-lists/
+     * 题解思路：
+     * 1. 哈希表
+     * 2. 栈
+     * 3. 双指针（具体的做法是链表A与链表B。将链表A的循环指针循环之后连接到B的首部，同样将B的连接到A的首部。
+     */
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        Set<ListNode> set=new HashSet<>();
+        while(headA!=null) {
+            set.add(headA);
+            headA=headA.next;
+        }
+        while(headB!=null) {
+            if (set.contains(headB)) return headB;
+            headB = headB.next;
+        }
+        return null;
     }
 
     /**
