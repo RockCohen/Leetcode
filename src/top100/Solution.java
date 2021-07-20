@@ -971,6 +971,46 @@ public class Solution {
         visited[i][j]=false;
         return res;
     }
+    /**
+     * 200. 岛屿数量
+     * @param grid
+     * @return
+     * 参考：https://leetcode-cn.com/problems/number-of-islands/
+     * 题解思路：
+     * 1. dfs
+     * 2. bfs
+     */
+    void dfs_NumIslands(char[][] grid, int r, int c) {
+        int nr = grid.length;
+        int nc = grid[0].length;
+        // 这一步处理真是妙啊
+        if (r < 0 || c < 0 || r >= nr || c >= nc || grid[r][c] == '0') {
+            return;
+        }
+        grid[r][c] = '0';
+        dfs_NumIslands(grid, r - 1, c);
+        dfs_NumIslands(grid, r + 1, c);
+        dfs_NumIslands(grid, r, c - 1);
+        dfs_NumIslands(grid, r, c + 1);
+    }
+
+    public int numIslands(char[][] grid) {
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        int nr = grid.length;
+        int nc = grid[0].length;
+        int num_islands = 0;
+        for (int r = 0; r < nr; ++r) {
+            for (int c = 0; c < nc; ++c) {
+                if (grid[r][c] == '1') {
+                    ++num_islands;
+                    dfs_NumIslands(grid, r, c);
+                }
+            }
+        }
+        return num_islands;
+    }
 
     /**
      * 94. 二叉树的中序遍历
@@ -1346,8 +1386,160 @@ public class Solution {
     }
 
     /**
+     *198. 打家劫舍
+     * 参考：https://leetcode-cn.com/problems/house-robber/
+     * 题解思路：
+     * 1. 动态规划
+     */
+    public int rob(int[] nums) {
+        if(nums.length==0)return 0;
+        int[] dp=new int[nums.length+1];
+        dp[1]=nums[0];
+        if(nums.length==1)return dp[1];
+        dp[2]=Math.max(nums[0],nums[1]);
+        if(nums.length==2)return dp[2];
+        for(int i=3;i<=nums.length;i++){
+                dp[i]=Math.max(dp[i-1],dp[i-2]+nums[i-1]);
+        }
+        return dp[nums.length];
+    }
+
+    /**
+     * 206. 反转链表
+     * @param head
+     * @return
+     * 参考：https://leetcode-cn.com/problems/reverse-linked-list/
+     * 题解思路：
+     * 1. 栈
+     * 2. 头插法
+     * 3. 递归
+     */
+    public ListNode reverseList(ListNode head) {
+        if(head==null||head.next==null)return head;
+        ListNode node=reverseList(head.next);
+        head.next.next=head;
+        head.next=null;
+        return node;
+    }
+
+    /**
+     * 207. 课程表
+     * @return
+     * 参考：https://leetcode-cn.com/problems/course-schedule/
+     * 题解思路：拓扑排序
+     * 1. dfs
+     * 2. bfs
+     *
+     *
+     */
+    List<List<Integer>> edges;// 连接表
+    int[] indigo;// 节点入度
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+        // 建立连接表图
+        edges = new ArrayList<>();
+        for (int i = 0; i < numCourses; ++i) {
+            edges.add(new ArrayList<>());
+        }
+        indigo = new int[numCourses];
+        for (int[] info : prerequisites) {
+            edges.get(info[1]).add(info[0]);
+            ++indigo[info[0]];//每增加边，对应节点的入度加一
+        }
+        // 初始化队列，BFS的基本数据结构
+        Queue<Integer> queue = new LinkedList<>();
+        for(int i=0;i<numCourses;i++){
+            if(indigo[i]==0){//首先将入度为0的节点加入队列
+                queue.offer(i);
+            }
+        }
+        int visited = 0;
+        while(!queue.isEmpty()){
+            ++visited;
+            int u = queue.poll();
+            for (int v: edges.get(u)) {
+                --indigo[v];
+                if (indigo[v] == 0) {
+                    queue.offer(v);
+                }
+            }
+        }
+        return visited==numCourses;
+    }
+
+    /**
+     * 前缀树
+     * 字典树
+     */
+    static class Trie {
+        private final Trie[] children;//子节点，由于子节点的数量确定，直接使用数组进行存储
+        private boolean isEnd;//结尾标志
+
+        public Trie() {
+            children = new Trie[26];
+            isEnd = false;
+        }
+
+        /**
+         * 字典树插入
+         * @param word 待插入单词
+         */
+        public void insert(String word) {
+            Trie node = this;
+            for (int i = 0; i < word.length(); i++) {
+                char ch = word.charAt(i);
+                int index = ch - 'a';
+                if (node.children[index] == null) {
+                    node.children[index] = new Trie();
+                }
+                node = node.children[index];
+            }
+            node.isEnd = true;
+        }
+
+        public boolean search(String word) {
+            Trie node = searchPrefix(word);
+            return node != null && node.isEnd;
+        }
+
+        public boolean startsWith(String prefix) {
+            return searchPrefix(prefix) != null;
+        }
+
+        private Trie searchPrefix(String prefix) {
+            Trie node = this;
+            for (int i = 0; i < prefix.length(); i++) {
+                char ch = prefix.charAt(i);
+                int index = ch - 'a';
+                if (node.children[index] == null) {
+                    return null;
+                }
+                node = node.children[index];
+            }
+            return node;
+        }
+    }
+
+    /**
+     * 226. 翻转二叉树
+     * @param root 树根
+     * @return
+     * 参考：https://leetcode-cn.com/problems/invert-binary-tree/
+     * 题解思路：
+     * 1. 递归交换
+     */
+    public TreeNode invertTree(TreeNode root) {
+        if(root==null|| root.left==null&&root.right==null) {
+            return  root;
+        }
+        else{
+            TreeNode right=invertTree(root.left);
+            root.left= invertTree(root.right);
+            root.right=right;
+        }
+        return root;//第二种情况也不需要判断
+    }
+    /**
      * 448. 找到所有数组中消失的数字
-     * @param nums
      * @return
      * 参考：https://leetcode-cn.com/problems/find-all-numbers-disappeared-in-an-array/
      * 题解思路：
@@ -1366,6 +1558,126 @@ public class Solution {
         return res;
 
     }
+
+    /**
+     * 234. 回文链表
+     * @param head
+     * @return
+     * 参考：https://leetcode-cn.com/problems/palindrome-linked-list/
+     * 题解思路：
+     * 1. 栈
+     * 2. 反转链表
+     * 3. 使用快慢指针找到中间节点，然后将其中一部分链表翻转，再判断。
+     */
+    public boolean isPalindrome(ListNode head) {
+        ListNode middle=middleNode(head);
+        ListNode reverseList = reverseList(middle);
+        while(head!=middle){
+            if(head.val==reverseList.val){
+                head=head.next;
+                reverseList=reverseList.next;
+            }else return false;
+        }
+        return true;
+    }
+    // 对于奇数（1除外）个节点的链表，slow指向的是正中间的节点，显然后半段比前半段多一个节点。
+    private ListNode middleNode(ListNode head){
+        ListNode fast=head.next;
+        ListNode slow=head;
+        while(fast!=null){
+            fast=fast.next;
+            slow=slow.next;
+            if(fast!=null){
+                fast=fast.next;
+            }
+        }
+        return slow;
+    }
+
+    /**
+     * 236. 二叉树的最近公共祖先
+     * 参考：https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-tree/
+     * 题解思路：
+     * 1. 从根开始查找，如果两个节点都在根的同一棵子树下，更改树根节点，否则直接返回根。但是这种思路显然耗时
+     * 2. 记录父亲节点
+     */
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if(root==null||root==p||root==q)return root;
+        boolean rightP = search(root.right, p);
+        boolean rightQ=search(root.right,q);
+        boolean leftP = search(root.left,p);
+        boolean leftQ= search(root.left,q);
+        if(rightP&&leftQ||leftP&&rightQ)return root;
+        else if(leftP&&leftQ){
+            return lowestCommonAncestor(root.left,p,q);
+        }else return lowestCommonAncestor(root.right,p,q);
+    }
+    private boolean search(TreeNode root,TreeNode p){
+        if(root==null||p==null)return false;
+        if(root==p)return true;
+        else return search(root.left,p)||search(root.right,p);
+    }
+
+    /**
+     * 通过parent来记录每个节点的父亲节点，然后从访问所有的p的祖先记录在数组中，
+     * 然后再访问q的祖先，看是否再已经访问的数组中。
+     */
+    Map<Integer, TreeNode> parent = new HashMap<>();
+    Set<Integer> visited = new HashSet<>();
+    public void dfs_low(TreeNode root) {
+        if (root.left != null) {
+            parent.put(root.left.val, root);
+            dfs_low(root.left);
+        }
+        if (root.right != null) {
+            parent.put(root.right.val, root);
+            dfs_low(root.right);
+        }
+    }
+    public TreeNode lowestCommonAncestor_father(TreeNode root, TreeNode p, TreeNode q) {
+        dfs_low(root);
+        while (p != null) {
+            visited.add(p.val);
+            p = parent.get(p.val);
+        }
+        while (q != null) {
+            if (visited.contains(q.val)) {
+                return q;
+            }
+            q = parent.get(q.val);
+        }
+        return null;
+    }
+
+    /**
+     * 238. 除自身以外数组的乘积
+     * 参考：https://leetcode-cn.com/problems/product-of-array-except-self/
+     * 题解思路：
+     * 1. 左一遍，又一遍
+     */
+    public int[] productExceptSelf(int[] nums) {
+        int length = nums.length;
+        int[] answer = new int[length];
+
+        // answer[i] 表示索引 i 左侧所有元素的乘积
+        // 因为索引为 '0' 的元素左侧没有元素， 所以 answer[0] = 1
+        answer[0] = 1;
+        for (int i = 1; i < length; i++) {
+            answer[i] = nums[i - 1] * answer[i - 1];
+        }
+
+        // R 为右侧所有元素的乘积
+        // 刚开始右边没有元素，所以 R = 1
+        int R = 1;
+        for (int i = length - 1; i >= 0; i--) {
+            // 对于索引 i，左边的乘积为 answer[i]，右边的乘积为 R
+            answer[i] = answer[i] * R;
+            // R 需要包含右边所有的乘积，所以计算下一个结果时需要将当前值乘到 R 上
+            R *= nums[i];
+        }
+        return answer;
+    }
+
     /**
      * 461. 汉明距离
      * @param x x
@@ -1407,11 +1719,15 @@ public class Solution {
         return Math.max(l,r)+1;
     }
     public static void main(String[] args) {
-        // TreeNode root=new TreeNode(6,new TreeNode(3,new TreeNode(1),new TreeNode(2)),new TreeNode(9,new TreeNode(7),new TreeNode(8)));
+        //TreeNode root=new TreeNode(6,new TreeNode(3,new TreeNode(1),new TreeNode(2)),new TreeNode(9,new TreeNode(7),new TreeNode(8)));
         final Solution solution = new Solution();
-        //ListNode list=new ListNode(1,new ListNode(2,new ListNode(3,new ListNode(4))));
-        int[] p={7,1,5,3,6,4};
-        final int profit = solution.maxProfit(p);
-        System.out.println(profit);
+        TreeNode root = new TreeNode(112,new TreeNode(234),new TreeNode(788));
+        TreeNode p=new TreeNode(4);
+        TreeNode q=new TreeNode(3);
+        root.right.right=p;
+        root.right.left=q;
+        final TreeNode node = solution.lowestCommonAncestor(root, p, q);
+        System.out.println(node.val);
+
     }
 }
