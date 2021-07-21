@@ -1679,6 +1679,113 @@ public class Solution {
     }
 
     /**
+     * 279. 完全平方数
+     * 参考：https://leetcode-cn.com/problems/perfect-squares/
+     * 题解思路：
+     * 1. 动态规划
+     *      f(i)= min(f(i-j*j.....)(j*j<i)+1
+     */
+    public int numSquares(int n) {
+        int[] f = new int[n + 1];
+        for (int i = 1; i <= n; i++) {
+            int minn = Integer.MAX_VALUE;
+            for (int j = 1; j * j <= i; j++) {
+                minn = Math.min(minn, f[i - j * j]);
+            }
+            f[i] = minn + 1;
+        }
+        return f[n];
+    }
+
+    /**
+     * 283. 移动零
+     * 参考：https://leetcode-cn.com/problems/move-zeroes/
+     * 题解思路：
+     * 1. 双指针
+     */
+    public void moveZeroes(int[] nums) {
+        int n = nums.length, left = 0, right = 0;
+        while (right < n) {
+            if (nums[right] != 0) {
+                if(left==right)continue;
+                swap(nums, left, right);
+                left++;
+            }
+            right++;
+        }
+    }
+
+    /**
+     * 287. 寻找重复数
+     * 参考：https://leetcode-cn.com/problems/find-the-duplicate-number/
+     * 题解思路：
+     * 1. 数学，高斯求和,当然这种方法只适合求解只有一个重复数，并且(1-n)的所有数都有。
+     * 2. 哈希
+     * 3. 排序
+     */
+    public int findDuplicate(int[] nums) {
+        int except=nums.length*(nums.length+1)/2;
+        int facts=0;
+        for (int num : nums) {
+            facts += num;
+        }
+        return nums.length-(except-facts);
+    }
+    public int findDuplicate_slow_fast(int[] nums) {
+        int slow = 0, fast = 0;
+        do {
+            slow = nums[slow];
+            fast = nums[nums[fast]];
+        } while (slow != fast);
+        slow = 0;
+        while (slow != fast) {
+            slow = nums[slow];
+            fast = nums[fast];
+        }
+        return slow;
+    }
+
+    /**
+     * 300. 最长递增子序列
+     * 参考：https://leetcode-cn.com/problems/longest-increasing-subsequence/
+     * 题解思路：
+     * 1. 动态规划
+     */
+    public int lengthOfLIS(int[] nums) {
+        int[] dp=new int[nums.length];
+        if(nums.length==0)return 0;
+        dp[0]=1;
+        int maxSum=1;
+        for(int i=0;i<nums.length;i++){
+            dp[i]=1;
+            for(int j=0;j<i;j++){
+                if(nums[i]>nums[j]){
+                    dp[i]=Math.max(dp[i],dp[j]+1);
+                }
+            }
+            maxSum=Math.max(maxSum,dp[i]);
+        }
+        return maxSum;
+    }
+
+    /**
+     * 309. 最佳买卖股票时机含冷冻期
+     * 参考：https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/
+     * 题解思路：
+     * 1. 动态规划，由于存在冷冻期，有点打家劫舍的感觉
+     */
+    public int maxProfit_rob(int[] prices) {
+        if(prices.length==0)return 0;
+        int tmp=prices[0];
+        prices[0]=0;
+        for(int i=1;i<prices.length;i++){
+            int current=prices[i];
+            prices[i]=prices[i]-tmp;
+            tmp=current;
+        }
+        return rob(prices);
+    }
+    /**
      * 461. 汉明距离
      * @param x x
      * @param y y
@@ -1721,13 +1828,9 @@ public class Solution {
     public static void main(String[] args) {
         //TreeNode root=new TreeNode(6,new TreeNode(3,new TreeNode(1),new TreeNode(2)),new TreeNode(9,new TreeNode(7),new TreeNode(8)));
         final Solution solution = new Solution();
-        TreeNode root = new TreeNode(112,new TreeNode(234),new TreeNode(788));
-        TreeNode p=new TreeNode(4);
-        TreeNode q=new TreeNode(3);
-        root.right.right=p;
-        root.right.left=q;
-        final TreeNode node = solution.lowestCommonAncestor(root, p, q);
-        System.out.println(node.val);
+        int[] nums={1,2,4};
+        System.out.println(solution.maxProfit_rob(nums));
+
 
     }
 }
