@@ -1,9 +1,7 @@
 package top100;
 
 import list.ListNode;
-import sun.reflect.generics.tree.Tree;
 import tree.TreeNode;
-
 import java.util.*;
 
 public class Solution {
@@ -1785,6 +1783,122 @@ public class Solution {
         }
         return rob(prices);
     }
+
+    /**
+     * 394. 字符串解码
+     * 参考：https://leetcode-cn.com/problems/decode-string/
+     * 题解思路：
+     * 1. 栈
+     */
+    public String decodeString(String s) {
+        Deque<Character> digits=new LinkedList<>();
+        Deque<Character> letters=new LinkedList<>();
+        int i=0;
+        while(i<s.length()){
+            if(Character.isDigit(s.charAt(i))){
+                digits.push(s.charAt(i));
+            }
+            else{
+                if(s.charAt(i)==']'){
+                    int times=digits.pop()-'0';
+                    StringBuilder stringBuilder=new StringBuilder();
+                    while(!letters.isEmpty()&&letters.peek()!='['){
+                        stringBuilder.append(letters.pop());
+                    }
+                    stringBuilder.reverse();
+                    letters.pop();
+                    String str=stringBuilder.toString();
+                    for(int j=1;j<times;j++){
+                        stringBuilder.append(str);
+                    }
+                    int k=0;
+                    while(k<stringBuilder.length()){
+                        letters.push(stringBuilder.charAt(k));
+                    }
+                }
+            }
+            i++;
+        }
+        StringBuilder res=new StringBuilder();
+        while(!letters.isEmpty()){
+            res.append(letters.pop());
+        }
+        return res.reverse().toString();
+    }
+
+    /**
+     * 560.和为K的子数组
+     * 参考：https://leetcode-cn.com/problems/subarray-sum-equals-k/
+     * 题解思路:
+     * 1. 前缀和+哈希表优化
+     */
+    public int subarraySum(int[] nums, int k) {
+        int count = 0, pre = 0;
+        HashMap < Integer, Integer > mp = new HashMap < > ();
+        mp.put(0, 1);
+        for (int num : nums) {
+            pre += num;
+            if (mp.containsKey(pre - k)) {
+                count += mp.get(pre - k);
+            }
+            mp.put(pre, mp.getOrDefault(pre, 0) + 1);
+        }
+        return count;
+    }
+
+    /**
+     * 437. 路径总和 III
+     * 参考：https://leetcode-cn.com/problems/path-sum-iii/
+     * 题解思路：
+     * 1. 前缀和+dfs
+     */
+    public int pathSum(TreeNode root, int sum) {
+        // key是前缀和, value是大小为key的前缀和出现的次数
+        Map<Integer, Integer> prefixSumCount = new HashMap<>();
+        // 前缀和为0的一条路径
+        prefixSumCount.put(0, 1);
+        // 前缀和的递归回溯思路
+        return recursionPathSum(root, prefixSumCount, sum, 0);
+    }
+
+    /**
+     * 前缀和的递归回溯思路
+     * 从当前节点反推到根节点(反推比较好理解，正向其实也只有一条)，有且仅有一条路径，因为这是一棵树
+     * 如果此前有和为currSum-target,而当前的和又为currSum,两者的差就肯定为target了
+     * 所以前缀和对于当前路径来说是唯一的，当前记录的前缀和，在回溯结束，回到本层时去除，保证其不影响其他分支的结果
+     * @param node 树节点
+     * @param prefixSumCount 前缀和Map
+     * @param target 目标值
+     * @param currSum 当前路径和
+     * @return 满足题意的解
+     */
+    private int recursionPathSum(TreeNode node, Map<Integer, Integer> prefixSumCount, int target, int currSum) {
+        // 1.递归终止条件
+        if (node == null) {
+            return 0;
+        }
+        // 2.本层要做的事情
+        int res = 0;
+        // 当前路径上的和
+        currSum += node.val;
+
+        //---核心代码
+        // 看看root到当前节点这条路上是否存在节点前缀和加target为currSum的路径
+        // 当前节点->root节点反推，有且仅有一条路径，如果此前有和为currSum-target,而当前的和又为currSum,两者的差就肯定为target了
+        // currSum-target相当于找路径的起点，起点的sum+target=currSum，当前点到起点的距离就是target
+        res += prefixSumCount.getOrDefault(currSum - target, 0);
+        // 更新路径上当前节点前缀和的个数
+        prefixSumCount.put(currSum, prefixSumCount.getOrDefault(currSum, 0) + 1);
+        //---核心代码
+
+        // 3.进入下一层
+        res += recursionPathSum(node.left, prefixSumCount, target, currSum);
+        res += recursionPathSum(node.right, prefixSumCount, target, currSum);
+
+        // 4.回到本层，恢复状态，去除当前节点的前缀和数量
+        prefixSumCount.put(currSum, prefixSumCount.get(currSum) - 1);
+        return res;
+    }
     /**
      * 461. 汉明距离
      * @param x x
@@ -1825,11 +1939,89 @@ public class Solution {
         ans=Math.max(ans,l+r);
         return Math.max(l,r)+1;
     }
+
+    /**
+     * 494. 目标和
+     * 参考：https://leetcode-cn.com/problems/target-sum/
+     * 题解思路：
+     * 1.
+     */
+    public int findTargetSumWays(int[] nums, int target) {
+        int sum = 0;
+        for (int num : nums) {
+            sum += num;
+        }
+        int diff = sum - target;
+        if (diff < 0 || diff % 2 != 0) {
+            return 0;
+        }
+        int neg = diff / 2;
+        int[] dp = new int[neg + 1];
+        dp[0] = 1;
+        for (int num : nums) {
+            for (int j = neg; j >= num; j--) {
+                dp[j] += dp[j - num];
+            }
+        }
+        return dp[neg];
+    }
+
+    /**
+     * 合并二叉树，其思想与合并排序链表一样。
+     * @param t1
+     * @param t2
+     * @return
+     */
+    public TreeNode mergeTrees(TreeNode t1, TreeNode t2) {
+        if (t1 == null) {
+            return t2;
+        }
+        if (t2 == null) {
+            return t1;
+        }
+        TreeNode merged = new TreeNode(t1.val + t2.val);
+        merged.left = mergeTrees(t1.left, t2.left);
+        merged.right = mergeTrees(t1.right, t2.right);
+        return merged;
+    }
+
+    /**
+     *
+     * @param s1
+     * @param s2
+     * @return
+     */
+    public int minimumDeleteSum(String s1, String s2) {
+        int m=s1.length();
+        int n=s2.length();
+        int mSum=0;
+        int nSum=0;
+        for(int i=0;i<m;i++){
+            mSum+=s1.charAt(i);
+        }
+        for(int i=0;i<n;i++){
+            nSum+=s2.charAt(i);
+        }
+        if(m==0)return nSum;
+        if(n==0)return mSum;
+        int[][] dp = new int[m+1][n+1];
+        for(int i=1;i<=m;i++){
+            char c1=s1.charAt(i-1);
+            for(int j=1;j<=n;j++){
+                char c2=s2.charAt(j-1);
+                if(c1==c2){
+                    dp[i][j]=dp[i-1][j-1]+c1;
+                }else{
+                    dp[i][j]=Math.max(dp[i-1][j],dp[i][j-1]);
+                }
+            }
+        }
+        return nSum+mSum-2*dp[m][n];
+    }
     public static void main(String[] args) {
         //TreeNode root=new TreeNode(6,new TreeNode(3,new TreeNode(1),new TreeNode(2)),new TreeNode(9,new TreeNode(7),new TreeNode(8)));
         final Solution solution = new Solution();
-        int[] nums={1,2,4};
-        System.out.println(solution.maxProfit_rob(nums));
+        System.out.println(solution.minimumDeleteSum("sea", "eat"));
 
 
     }
