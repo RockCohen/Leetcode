@@ -4,7 +4,9 @@ package list;
  * 单链表数据结构__这是一个带头节点的单链表
  */
 public class ListNode {
+
     public int val;
+
     public ListNode next;
     public ListNode() {}
     public ListNode(int val) { this.val = val; }
@@ -16,6 +18,12 @@ public class ListNode {
           next=next.next;
       }
     }
+
+    /**
+     * 测试使用
+     * @param val
+     * @return
+     */
     public ListNode makeList(int[] val){
       ListNode node =new ListNode();
       ListNode node1=node;
