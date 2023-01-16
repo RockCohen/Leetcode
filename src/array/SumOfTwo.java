@@ -1,6 +1,10 @@
 package array;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * 两数之和：
 给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出 和为目标值 的那 两个 整数，并返回它们的数组下标。
@@ -19,14 +23,14 @@ import java.util.HashMap;
  */
 public class SumOfTwo {
     public int[] twoSum1(int[] nums, int target) {//nums为无序数组
-        HashMap<Integer,Integer> hashTable=new HashMap<>();
+        Map<Integer,Integer> hashTable=new HashMap<>();
         for(int i=0;i<nums.length;++i){
             if(hashTable.containsKey(target-nums[i]))
                 return new int[]{hashTable.get(target-nums[i]),i};
             hashTable.put(nums[i],i);
         }
+        // 需要返回默认值 保证分支逻辑都有返回。
         return new int[0];
-
     }
     public int[] twoSum2(int[] nums,int target){//nums为有序数组
         int i=0;
