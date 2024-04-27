@@ -16,7 +16,7 @@ public class StackOperating {
  * @see https://leetcode-cn.com/problems/valid-parentheses/
  */
 public boolean isValid(String s) {
-    if(s.length()==0)return true;
+    if(s.isEmpty())return true;
     Stack<Character> stack=new Stack<>();
     stack.push(s.charAt(0));
     int i=1;
